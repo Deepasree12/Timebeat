@@ -1,0 +1,68 @@
+{% extends 'adminhome.html' %}
+
+
+{% block index %}
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+  <h1 class="h3 mb-0 text-gray-800">ADD PRODUCT</h1>
+</div> 
+
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <form>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label for="productName" class="form-label">Product Name</label>
+              <input type="text" class="form-control" id="productName" required>
+            </div>
+            <div class="mb-3">
+              <label for="productPrice" class="form-label">Brand</label>
+              <input type="number" class="form-control" id="productPrice" step="0.01" required>
+            </div>
+            <div class="mb-3">
+              <label for="productQuantity" class="form-label">Model</label>
+              <input type="number" class="form-control" id="productQuantity" required>
+            </div>
+            <div class="mb-3">
+              <label for="stock" class="form-label">Stock</label>
+              <input type="number" class="form-control" id="stock" required>
+            </div>
+            <div class="mb-3">
+              <label for="details" class="form-label">Details</label>
+              <input type="text" class="form-control" id="details" required>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label for="actualPrice" class="form-label">Actual Price</label>
+              <input type="number" class="form-control" id="actualPrice" required>
+            </div>
+            <div class="mb-3">
+              <label for="sellingPrice" class="form-label">Selling Price</label>
+              <input type="number" class="form-control" id="sellingPrice" required>
+            </div>
+            
+            <div class="mb-3">
+              <label for="productPrice" class="form-label">Category</label>
+              <input type="number" class="form-control" id="productPrice" step="0.01" required>
+            </div>
+            <div class="mb-3">
+              <label for="productPrice" class="form-label"> Sub Category</label>
+              <input type="number" class="form-control" id="productPrice" step="0.01" required>
+            </div>
+            
+            <div class="mb-3">
+              <label for="productImage" class="form-label">Choose Image</label>
+              <input type="file" class="form-control" id="productImage" accept="image/*" required>
+            </div>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Product</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock index %}
+

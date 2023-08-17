@@ -1,0 +1,47 @@
+{% extends 'adminhome.html' %}
+
+
+{% block index %}
+
+<div class="container mt-5">
+  <div class="row justify-content-center">
+      <div class="col-md-6">
+          <h2 class="mb-4"> New subCategory </h2>
+          
+          <form action="." method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+              
+              
+              <div class="mb-3">
+                  <label for="subcategoryName" class="form-label">Subcategory Name</label>
+                  <input type="text" class="form-control" id="subcategoryName" name="sub" required>
+              </div>
+             
+              <select class="form-control mb-4" name="category" >
+                <option selected disabled>Select Category</option>
+        
+                {% for cat in p_category %}
+                <option value="{{cat.id}}"  >{{cat.name}}</option>
+                {% endfor %}
+        
+            </select>
+            <div class="mb-3">
+              <label for="subimage" class="form-label">Image</label>
+              <input type="file" class="form-control" id="subcategoryImage" name="image" required>
+          </div>
+            
+            
+        <button type="submit" class="btn btn-primary">Add Subcategory </button>
+          </form>
+      </div>
+  </div>
+</div>
+
+
+{% endblock index %}
+
+
+
+
+
+

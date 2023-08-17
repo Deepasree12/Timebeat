@@ -1,0 +1,54 @@
+{% extends 'adminhome.html' %}
+
+
+{% block index %}
+<div class="container mt-5">
+  <div class="row ">
+      <div class="col-md-6">
+          <h2 class="mb-4">Category </h2>
+          
+          <form action="." method="post">
+            {% csrf_token %}
+              <div class="mb-3">
+                  <label for="categoryName" class="form-label">Category Name</label>
+                  <input type="text" class="form-control" id="categoryName" name="category" required>
+              </div>
+            
+              <button type="submit" class="btn btn-primary">Add Brand</button>
+          </form>
+      </div>
+  </div>
+  <div class="row ">  <!-- Center the second table -->
+    <div class="col-md-6">
+    <br>
+    <br>
+    
+ 
+    <table class="table table-striped table-bordered" cellspacing="0" style="width: 190%;" cellspacing="0"  id="dataTable">
+     <thead >
+         <th>ID</th>
+         <th>CategoryName</th>
+         
+         {% comment %} <th>Action</th> {% endcomment %}
+
+         
+     </thead>
+     {% for item in data %}
+     <tr>
+         <td>{{item.pk}}</td>
+         <td>{{item.name}}</td>
+         
+          
+        
+     
+     </tr>
+     
+     {% endfor %}
+        
+</div>
+</div>
+
+
+
+{% endblock index %}
+
