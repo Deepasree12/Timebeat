@@ -32,8 +32,7 @@ class Product(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     subcategory = models.ForeignKey(Subcategory, on_delete=models.CASCADE)
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE)  
-    original_price=models.FloatField(null=True)
-    selling_price=models.FloatField(null=True)
+    
     name = models.CharField(max_length=300,null=False,blank=False)
     
     description = models.CharField(max_length=500,null=True,blank=True)
@@ -58,8 +57,10 @@ class Variant(models.Model):
     
     stock=models.IntegerField(null=True)
     mainimage = models.ImageField(upload_to="images",null=True,blank=True)
-    color=models.ForeignKey(Color, on_delete=models.CASCADE,null=True)
+    color=models.ForeignKey(Color, on_delete=models.CASCADE,null=True,related_name="variants")
     product = models.ForeignKey(Product, on_delete=models.CASCADE,related_name="variant")
+    original_price=models.FloatField(null=True)
+    selling_price=models.FloatField(null=True)
    
     def __str__(self):
         return self.name

@@ -64,7 +64,7 @@
                 <input type="number" class="form-control" id="quantity" name="quantity" required>
               </div> {% endcomment %}
               <div class="row">
-              <div class="col-md-6 mb-3">
+              {% comment %} <div class="col-md-6 mb-3">
                 <label for="originalPrice" class="form-label">Original Price</label>
                 <input type="number" class="form-control" id="originalPrice" name="original" required>
               </div>
@@ -73,7 +73,7 @@
                 <label for="sellingPrice" class="form-label">Selling Price</label>
                 <input type="number" class="form-control" id="sellingPrice" name="selling" required>
               </div>
-           
+            {% endcomment %}
             <div class="mb-3">
               <label for="subimage" class="form-label">Image</label>
               <input type="file" class="form-control" id="subcategoryImage" name="image" required>
@@ -105,8 +105,8 @@
       <th class="th-sm">Category</th>
       <th class="th-sm">subategory</th>
       <th class="th-sm">brand</th>
-      <th class="th-sm">Actual</th>
-      <th class="th-sm">selling</th>
+      {% comment %} <th class="th-sm">Actual</th>
+      <th class="th-sm">selling</th> {% endcomment %}
       
       <th class="th-sm">Actions</th>
     </tr>
@@ -119,8 +119,8 @@
       <td>{{ item.category.name }}</td>
       <td>{{ item.subcategory.name }}</td>
       <td>{{ item.brand.name }}</td>
-      <td>{{item.original_price}}</td>
-      <td>{{item.selling_price}}</td>
+      {% comment %} <td>{{item.original_price}}</td>
+      <td>{{item.selling_price}}</td> {% endcomment %}
       
      
       

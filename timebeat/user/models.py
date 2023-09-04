@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractBaseUser,PermissionsMixin
 from . manager import CustomUserManager
 from django.db import models
+from store.models import *
 import uuid
 
 
@@ -22,8 +23,9 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 # class Cart(models.Model):
 #     id = models.UUIDField(primary_key=True,editable=False,default=uuid.uuid4)
+#     user=models.OneToOneField(User,on_delete=models.CASCADE,related_name='cart')
     
-#     name = models.CharField(max_length=200,null=False,blank=False)
-#     quantity=models.IntegerField(null=False)
-#     def __str__(self):
-#         return self.name
+# class CartItem(models.Model):
+#    id = models.UUIDField(primary_key=True,editable=False,default=uuid.uuid4)
+#    product_variant=models.ForeignKey(Variant,on_delete=models.CASCADE,related_name='cartitem')
+#    count=models.IntegerField(default=1)

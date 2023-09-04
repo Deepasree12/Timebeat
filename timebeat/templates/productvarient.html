@@ -14,7 +14,7 @@
       <!-- Added modal-lg class for larger width -->
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLongTitle">Add Product Details</h5>
+          <div><h3>{{ product.name }}</h3></div>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -22,54 +22,52 @@
         <div class="modal-body" style="overflow: hidden;">
           <form action="." method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            <div class="d-flex justify-content-between pb-4">
-              <div><h3>{{product.name }}</h3></div>
-            <div class="mb-3">
-              <label for="VarientName" class="form-label">Varient Name</label>
-              <input type="text" class="form-control" id="VarientName" name="name" required>
-            </div>
-
+            
             <div class="row">
               <div class="col-md-6 mb-3">
-                <select class="form-control mb-3" name="color">
-                  <option selected disabled>Select Color</option>
-
-                  {% for color in colors %}
-                  <option value="{{color.pk}}">{{color.title}}</option>
-                  {% endfor %}
-
-                </select>
+                <label for="VarientName" class="form-label">Variant Name</label>
+                <input type="text" class="form-control" id="VarientName" name="name" required>
               </div>
-              
-              
-            </div>
-
-            
-              <div class="row">
               <div class="col-md-6 mb-3">
-                <label for="stock" class="form-label">stock</label>
+                <label for="stock" class="form-label">Stock</label>
                 <input type="number" class="form-control" id="originalPrice" name="stock" required>
               </div>
-
-              
-           <div class="mb-3">
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="color" class="form-label">Color</label>
+                <select class="form-control" name="color">
+                  <option selected disabled>Select Color</option>
+                  {% for color in colors %}
+                  <option value="{{ color.pk }}">{{ color.title }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              {% comment %} <div class="row"> {% endcomment %}
+                <div class="col-md-6 mb-3">
+                  <label for="originalPrice" class="form-label">Original Price</label>
+                  <input type="number" class="form-control" id="originalPrice" name="original" required>
+                </div>
+  
+                <div class="col-md-6 mb-3">
+                  <label for="sellingPrice" class="form-label">Selling Price</label>
+                  <input type="number" class="form-control" id="sellingPrice" name="selling" required>
+                </div>
+              <div class="col-md-6 mb-3">
                 <label for="subimage" class="form-label">Main Image</label>
                 <input type="file" class="form-control" id="subcategoryImage" name="image" required>
-              </div> 
+              </div>
             </div>
             <div class="mb-3">
               <label for="subimage" class="form-label">Sub Images</label>
               <input type="file" class="form-control" id="subcategoryImage" name="subimage" multiple required>
-            </div> 
-          </div>
-
-            
-
+            </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              <button type="submit" class="btn btn-success">ADD</button> <!-- Corrected this line -->
+              <button type="submit" class="btn btn-success">Add</button>
             </div>
           </form>
+          
         </div>
       </div>
     </div>
@@ -87,6 +85,8 @@
       <th class="th-sm">Mainimage</th>
       <th class="th-sm">Subimage</th>
       <th class="th-sm">name</th>
+      <th class="th-sm">Actual</th>
+      <th class="th-sm">selling</th>
       <th class="th-sm">action</th>
      
       
@@ -114,6 +114,8 @@
       {% endfor %}</td>
      
      <td>{{variant.product.name }}</td>
+     <td>{{variant.original_price}}</td>
+      <td>{{variant.selling_price}}</td>
      <td><a href="" style="color: green;">view</a> <a href="productmodel" style="color: blue;">edit</a> <a href="" style="color: red;">delete</a></td>
     </tr>
   

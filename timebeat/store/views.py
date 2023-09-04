@@ -104,8 +104,7 @@ class product_view(View):
         subcat = request.POST.get('subcategory')
         brand=request.POST.get('brand')
         
-        original = request.POST.get('original')
-        selling = request.POST.get('selling')
+        
         details = request.POST.get('details')
         
         
@@ -113,7 +112,7 @@ class product_view(View):
         subcategory =Subcategory.objects.get(id=subcat)
         brand=Brand.objects.get(id=brand)
        
-        Product.objects.create(name=name, category=category,subcategory=subcategory,original_price=original,selling_price=selling,description=details,brand=brand)
+        Product.objects.create(name=name, category=category,subcategory=subcategory,description=details,brand=brand)
 
         return redirect('productview')
 
@@ -151,7 +150,9 @@ class Varient_view(View):
         color = Color.objects.get(id=clr)
         product = Product.objects.get(id=pk)
         subimages = request.FILES.getlist('subimage')
-        varient=Variant.objects.create(mainimage=image,stock=stock,color=color,product=product)
+        original = request.POST.get('original')
+        selling = request.POST.get('selling')
+        varient=Variant.objects.create(mainimage=image,stock=stock,color=color,product=product,original_price=original,selling_price=selling)
         
         for image in subimages:
             Images.objects.create(image=image,varient=varient)

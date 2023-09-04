@@ -14,4 +14,5 @@ urlpatterns=[
    
     path('productview/<uuid:pk>/', views.productdetail.as_view(), name='productdetail'),
     
+    
 ]

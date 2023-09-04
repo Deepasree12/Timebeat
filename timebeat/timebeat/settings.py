@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'user',
     'store',
+    'cart',
+    'wishlist',
 ]
 
 MIDDLEWARE = [
@@ -81,7 +83,7 @@ WSGI_APPLICATION = 'timebeat.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'TimeBeatNew',
+        'NAME': 'TimeBeatOne',
         'USER': 'postgres',
         'PASSWORD': 'ima123',
         'HOST': 'localhost',  # Typically 'localhost' or '127.0.0.1'
@@ -130,6 +132,7 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR,'media')
+
 
 
 

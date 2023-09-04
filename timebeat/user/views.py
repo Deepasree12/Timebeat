@@ -108,6 +108,7 @@ class productdetail(View):
         
         
         return render(request,'productdetail.html',{"varient":varient})
+    
 
 
 class reset(View):
