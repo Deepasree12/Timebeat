@@ -5,14 +5,15 @@ from .email import send_otp_email
 from django.core.cache import cache
 from . models import *
 from store.models import *
-from store.models import Product,Category,Subcategory
+from user.views import *
+from wishlist.models import *
+from user. models import *
+from store.models import *
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
 from django.views import View
-
-
-
-
-
+from user.models import User
+from django.db.models import Q
 
 class index(View):
     def get(self,request):
@@ -21,7 +22,7 @@ class index(View):
         product=Product.objects.all()
         
         return render(request,'index.html',{"category":category,"products":product,"subcategory":subcategory})
-# @login_required(login_url='signin')//add in wishlist
+
 
 
 
@@ -98,8 +99,34 @@ class signin(View):
 
 class productlist(View):
     def get(self,request):
-        product=Product.objects.all()
-        return render(request,'productlist.html',{"products":product})
+        sort=request.GET.get('sort')
+        search_key = request.GET.get('search')
+        
+        products=Product.objects.all()
+        brands=Brand.objects.all()
+        color=Color.objects.all()
+        if search_key:
+            
+           products = products.filter(Q(name__istartswith=search_key)|Q( brand__name__istartswith=search_key)|Q(subcategory__name__istartswith=search_key))
+
+       
+        for product in products:
+            try:
+                product.is_in_wishlist = WishlistItem.objects.filter(product_variant=product.variants.first(), wished_item=request.user.wishlist).exists()  
+            except:
+                product.is_in_wishlist = False
+                # finally:
+                #     variants.append(variant)
+        if sort:
+            if sort == 'low_to_high':
+                products = products.annotate(first_variant_selling_price=models.Min('variants__selling_price')).order_by('first_variant_selling_price')
+            if sort == 'high_to_low':
+                products = products.annotate(first_variant_selling_price=models.Min('variants__selling_price')).order_by('-first_variant_selling_price')
+
+
+
+            
+        return render(request,'productlist.html',{"products":products,"brands":brands,"color":color})
 
 class productdetail(View):
     def get(self,request,pk):
@@ -108,6 +135,32 @@ class productdetail(View):
         
         
         return render(request,'productdetail.html',{"varient":varient})
+    
+
+class userprofile(LoginRequiredMixin,View):
+    def get(self,request):
+        user_data = UserAddress.objects.filter(user=request.user)
+        current_user = User.objects.filter(email=request.user.email).values('name', 'email').first()
+        return render(request,'userprofile.html',{'current_user':current_user,'user_data':user_data})
+
+
+    def post(self, request):
+      
+        name = request.POST.get('name')
+        gender = request.POST.get('gender')
+        mobile =request.POST.get('mobile')
+        address_type = request.POST.get('address_type')
+        place =  request.POST.get('place')
+        address = request.POST.get('address')
+        landmark = request.POST.get('landmark')
+        pincode =request.POST.get('pincode')
+        current_user = request.user
+        UserAddress.objects.create(name=name,gender=gender,mobile=mobile,address_type=address_type,place=place,
+                                    address=address,landmark=landmark,pincode=pincode,user=current_user)
+
+        return redirect('profile')
+
+        
     
 
 
@@ -140,58 +193,3 @@ class logout_view(View):
 
 
 
-# Create your views here.
-
-# def signup_user(request):
-
-#   if request.method == 'POST':
-#     name = request.POST.get('name')
-#     email = request.POST.get('email')
-#     password = request.POST.get('pass')
-#     userobj = User.objects.filter(email=email)
-#     if userobj.exists():
-#       messages.warning(request , 'You are already registerd, Please sign in')
-#       return redirect(signup_user)
-#     send_otp_email(email, name, password)
-#     return redirect(verify_otp)
-#   return render(request , 'user_signup.html')
-
-
-# def verify_otp(request):
-#   if request.method == 'POST':
-#     reciveotp = request.POST.get('otp1') + request.POST.get('otp2') + request.POST.get('otp3') + request.POST.get('otp4') + request.POST.get('otp5') + request.POST.get('otp6')
-#     try:
-#       name = cache.get('signup_data')['name']
-#       email = cache.get('signup_data')['email']
-#       password = cache.get('signup_data')['password']
-#       otp = cache.get('signup_data')['otp']
-#     except:
-#       messages.warning(request,'otp exipred')
-#       return redirect(verify_otp)
-#     print(otp,reciveotp)
-#     if reciveotp != otp:
-#       messages.warning(request , 'OTP mismatch')
-#       return redirect(verify_otp)
-#     User.objects.create_user(name = name , email = email , password=password)
-#     cache.clear()
-#     return redirect(signin)
-#   return render(request , 'user_verify_otp.html')
-
-# def signin(request):
-
-#   if request.method == 'POST':
-#     email = request.POST.get('email')
-#     password = request.POST.get('pass')
-#     print(email,password)
-#     user = authenticate(request, email=email,password=password)
-#     print(user)
-#     if user is not None:
-#       login(request, user)
-#       request.session['usr_id'] = user.id
-#     messages.warning(request , 'Email password mismatch')
-#   return render( request , 'user_signin.html')
-
-
-# def signout(request):
-#   logout(request)
-#   return redirect(signin)

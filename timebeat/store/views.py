@@ -135,7 +135,7 @@ class Varient_view(View):
         
         
         specified_product = get_object_or_404(Product, id=pk)
-        variants = specified_product.variant.prefetch_related('variant_images')
+        variants = specified_product.variants.prefetch_related('variant_images')
         colors=Color.objects.all()
         
         return render(request, 'productvarient.html',{'colors':colors,'product':specified_product,'variants':variants})

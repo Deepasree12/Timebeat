@@ -7,7 +7,7 @@ import uuid
 
 class Wishlist(models.Model):
    id = models.UUIDField(primary_key=True,editable=False,default=uuid.uuid4)
-   user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='wishlists',default=True)
+   user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='wishlist')
     
    def __str__(self):
       return self.id
@@ -16,8 +16,8 @@ class Wishlist(models.Model):
 class WishlistItem(models.Model):
    id = models.UUIDField(primary_key=True,editable=False,default=uuid.uuid4)
    product_variant=models.ForeignKey(Variant,on_delete=models.CASCADE,related_name='wishlistitems')
-   wished_item=models.ForeignKey(Wishlist,on_delete=models.CASCADE,default=None,related_name='wishlistitems')
-   added_date = models.DateTimeField(auto_now_add=True)
+   wished_item=models.ForeignKey(Wishlist,on_delete=models.CASCADE,related_name='wishlistitems')
+   
 
    def __str__(self):
-      return self.wished_item.id
+        return str(self.id)

@@ -58,12 +58,12 @@ class Variant(models.Model):
     stock=models.IntegerField(null=True)
     mainimage = models.ImageField(upload_to="images",null=True,blank=True)
     color=models.ForeignKey(Color, on_delete=models.CASCADE,null=True,related_name="variants")
-    product = models.ForeignKey(Product, on_delete=models.CASCADE,related_name="variant")
+    product = models.ForeignKey(Product, on_delete=models.CASCADE,related_name="variants")
     original_price=models.FloatField(null=True)
     selling_price=models.FloatField(null=True)
    
-    def __str__(self):
-        return self.name
+    # def __str__(self):
+    #     return self.name
 
 class Images(models.Model):
     id = models.UUIDField(primary_key=True,editable=False,default=uuid.uuid4)

@@ -75,7 +75,9 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'timebeat.wsgi.application'
-
+LOGIN_URL= 'signin'
+LOGIN_REDIRECT_URL ='home'
+LOGOUT_REDIRECT_URL='home'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases

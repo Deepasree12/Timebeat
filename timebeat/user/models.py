@@ -20,12 +20,16 @@ class User(AbstractBaseUser, PermissionsMixin):
   def __str__(self):
       return self.name
   
+class UserAddress(models.Model):
+  id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
+  user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_addresses')
+  name = models.CharField(max_length=100)
+  gender = models.CharField(max_length=10, choices=[('Mr', 'male'),('Mrs', 'female')])
+  mobile = models.CharField(max_length=10)
+  address_type = models.CharField(max_length=20, choices=[('house','house'),('office','office')]) 
+  place = models.CharField(max_length=100) 
+  address = models.CharField(max_length=200)
+  landmark = models.CharField(max_length=200)
+  pincode = models.CharField(max_length=6)
 
-# class Cart(models.Model):
-#     id = models.UUIDField(primary_key=True,editable=False,default=uuid.uuid4)
-#     user=models.OneToOneField(User,on_delete=models.CASCADE,related_name='cart')
-    
-# class CartItem(models.Model):
-#    id = models.UUIDField(primary_key=True,editable=False,default=uuid.uuid4)
-#    product_variant=models.ForeignKey(Variant,on_delete=models.CASCADE,related_name='cartitem')
-#    count=models.IntegerField(default=1)
+

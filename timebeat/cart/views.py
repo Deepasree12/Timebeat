@@ -124,9 +124,10 @@ def decrement_cart(request, pk):
 
     if request.user.is_authenticated:
        
-        cart_items = CartItem.objects.get(product_variant_id=pk)
-        cart_items.count -= 1
-        cart_items.save()
+        cart_item = CartItem.objects.get(product_variant_id=pk)
+        # if cart_item.count > 1:
+        cart_item.count -= 1
+        cart_item.save()
         return redirect('cart')
     else:
         cart = request.session.get('cart_id', {})
