@@ -105,7 +105,7 @@ def increment_cart(request, pk):
         cart_items = CartItem.objects.get(product_variant_id=pk)
         cart_items.count += 1
         cart_items.save()
-        return redirect('cart')
+        return redirect(request.META.get('HTTP_REFERER'))
     else:
         cart = request.session.get('cart_id', {})
         
@@ -116,7 +116,7 @@ def increment_cart(request, pk):
             
             cart[str(variant.id)] = cart_items
             request.session['cart_id'] = cart
-            return redirect('cart')
+            return redirect(request.META.get('HTTP_REFERER'))
         except Variant.DoesNotExist:
             return HttpResponseBadRequest("Invalid variant")
 
@@ -128,7 +128,7 @@ def decrement_cart(request, pk):
         # if cart_item.count > 1:
         cart_item.count -= 1
         cart_item.save()
-        return redirect('cart')
+        return redirect(request.META.get('HTTP_REFERER'))
     else:
         cart = request.session.get('cart_id', {})
         
@@ -142,7 +142,7 @@ def decrement_cart(request, pk):
             else:
                 del cart[str(variant.id)]  # Remove the item from the cart if count <= 1
                 request.session['cart_id'] = cart
-            return redirect('cart')
+            return redirect(request.META.get('HTTP_REFERER'))
         except Variant.DoesNotExist:
             return HttpResponseBadRequest("Invalid variant")
 
@@ -153,7 +153,7 @@ def delete_cart(request, pk):
     if request.user.is_authenticated:
         cart_item = CartItem.objects.get(product_variant_id=pk)
         cart_item.delete()
-        return redirect('cart')
+        return redirect(request.META.get('HTTP_REFERER'))
     else:
         cart = request.session.get('cart_id', {})
         
@@ -162,7 +162,7 @@ def delete_cart(request, pk):
             if str(variant.id) in cart:
                 del cart[str(variant.id)]
                 request.session['cart_id'] = cart
-                return redirect('cart')
+                return redirect(request.META.get('HTTP_REFERER'))
             else:
                 return HttpResponseBadRequest("Item not found in the cart")
         except Variant.DoesNotExist:

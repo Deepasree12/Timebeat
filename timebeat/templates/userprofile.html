@@ -305,10 +305,14 @@
                       <input type="text" class="form-control" id="landmark" name="landmark" required>
                     </div>
                     <div class="col-md-6 mb-3">
-                      <label for="pincode" class="form-label">Pincode</label>
+                      <label for="pincodeInput" class="form-label">Pincode</label>
                       <input type="text" class="form-control" id="pincode" name="pincode" required>
+											<button id="fetchButton">get</button>
                     </div>
+										
                   </div>
+									<div class="row" id="pincodeResult">
+									</div>
                 
                   <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -340,7 +344,9 @@
                   <strong>Place:</strong> {{ address.place }}<br>
                   <strong>Address:</strong> {{ address.address }}<br>
                   <strong>Landmark:</strong> {{ address.landmark }}<br>
-                  <strong>Pincode:</strong> {{ address.pincode }}<br>
+									
+									
+									
             </p>
           </div>
       </div>
@@ -533,7 +539,54 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 			</div>
 		</div>
 	</div>
+  <script>
+		document.addEventListener('DOMContentLoaded', function () {
+				const pincodeInput = document.getElementById('pincodeInput');
+				const fetchButton = document.getElementById('fetchButton');
+				const pincodeResultDiv = document.getElementById('pincodeResult');
 
+				fetchButton.addEventListener('click', function () {
+						const pincode = pincodeInput.value;
+
+						// Clear previous results
+						pincodeResultDiv.innerHTML = '';
+
+						// Check if the pincode is not empty
+						if (pincode.trim() === '') {
+								pincodeResultDiv.innerText = 'Please enter a pincode.';
+								return;
+						}
+
+						// Construct the API endpoint with the entered pincode
+						const apiEndpoint = `https://api.postalpincode.in/pincode/${pincode}`;
+
+						// Make an API request to fetch data based on the pincode
+						fetch(apiEndpoint)
+								.then(response => {
+										if (!response.ok) {
+												throw new Error('Network response was not ok');
+										}
+										return response.json();
+								})
+								.then(data => {
+										// Display the fetched data
+										if (data && data.length > 0 && data[0].Status === 'Success') {
+												const postalData = data[0].PostOffice[0];
+												pincodeResultDiv.innerHTML = `<h2>Pincode Details:</h2>
+														<p><strong>Post Office:</strong> ${postalData.Name}</p>
+														<p><strong>District:</strong> ${postalData.District}</p>
+														<p><strong>State:</strong> ${postalData.State}</p>`;
+										} else {
+												pincodeResultDiv.innerText = 'Pincode not found or API error.';
+										}
+								})
+								.catch(error => {
+										console.error('Error:', error);
+										pincodeResultDiv.innerText = 'Error fetching data. Please try again later.';
+								});
+				});
+		});
+</script>
 <!--===============================================================================================-->	
 	<script src="{% static '/vendor/jquery/jquery-3.2.1.min.js' %}"></script>
 <!--===============================================================================================-->

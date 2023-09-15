@@ -6,14 +6,20 @@ from django.core.cache import cache
 from . models import *
 from store.models import *
 from user.views import *
+from cart.views import *
 from wishlist.models import *
 from user. models import *
+from cart. models import *
 from store.models import *
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
 from django.views import View
 from user.models import User
 from django.db.models import Q
+from django.core.paginator import Paginator
+from datetime import datetime, timedelta
+
 
 class index(View):
     def get(self,request):
@@ -101,32 +107,68 @@ class productlist(View):
     def get(self,request):
         sort=request.GET.get('sort')
         search_key = request.GET.get('search')
-        
+       
+        brand_filter = request.GET.getlist('brand_items')
+        color_filter = request.GET.getlist('color_items')
+        min_price_filter = request.GET.get('min_price')
+        max_price_filter = request.GET.get('max_price')
+        page_number=request.GET.get('page')
         products=Product.objects.all()
+        variant=Variant.objects.all()
         brands=Brand.objects.all()
-        color=Color.objects.all()
+        colors=Color.objects.all()
         if search_key:
             
            products = products.filter(Q(name__istartswith=search_key)|Q( brand__name__istartswith=search_key)|Q(subcategory__name__istartswith=search_key))
 
-       
+        
+      
+        variants = []
         for product in products:
-            try:
-                product.is_in_wishlist = WishlistItem.objects.filter(product_variant=product.variants.first(), wished_item=request.user.wishlist).exists()  
-            except:
-                product.is_in_wishlist = False
-                # finally:
-                #     variants.append(variant)
+            variant = product.variants.order_by('selling_price').first()
+            if variant:
+                try:
+                    variant.is_in_wishlist =  WishlistItem.objects.filter(product_variant=product.variants.first(), wished_item=request.user.wishlist).exists()    
+                except:
+                    variant.is_in_wishlist = False
+                finally:
+                    variants.append(variant)
+        if brand_filter:
+            variants = [variant for variant in variants if variant.product.brand.name in brand_filter]
+
+        if color_filter:
+             variants = [variant for variant in variants if variant.color.title in color_filter]
+
+        min_price = None
+        max_price = None
+        if min_price_filter and max_price_filter:
+            min_price = float(min_price_filter)
+            max_price = float(max_price_filter)
+            products = product.filter(selling_price__gte=min_price,selling_price__lte=max_price)
+        price_ranges = [
+        {"value": "500-1000", "min": 500, "max": 1000},
+        {"value": "1000-2000", "min": 1000, "max": 2000},
+        {"value": "2000-3000", "min": 2000, "max": 3000},
+        {"value": "3000-4000", "min": 3000, "max": 4000},
+        {"value": "4000-5000", "min": 4000, "max": 5000},
+        {"value": "5000-", "min": 5000, "max": None},  ]
+        
         if sort:
             if sort == 'low_to_high':
-                products = products.annotate(first_variant_selling_price=models.Min('variants__selling_price')).order_by('first_variant_selling_price')
-            if sort == 'high_to_low':
-                products = products.annotate(first_variant_selling_price=models.Min('variants__selling_price')).order_by('-first_variant_selling_price')
-
-
-
-            
-        return render(request,'productlist.html',{"products":products,"brands":brands,"color":color})
+                variants = sorted(variants, key=lambda x: x.selling_price)
+            elif sort == 'high_to_low':
+                variants = sorted(variants, key=lambda x: x.selling_price, reverse=True)
+            elif sort == 'new_arrivals':
+                products = products.order_by('-created_at')[:10]
+                variants = [product.variants.order_by('selling_price').first() for product in products]
+                       
+        paginator = Paginator(variants, 2)
+        page = paginator.get_page(page_number)
+        
+        
+        return render(request,'productlist.html',{"page":page,"brands":brands,"colors":colors,'brand_filter':brand_filter, 'color_filter':color_filter,'price_ranges': price_ranges,
+            'min_price': min_price, 'max_price': max_price  })
+  
 
 class productdetail(View):
     def get(self,request,pk):
@@ -162,10 +204,49 @@ class userprofile(LoginRequiredMixin,View):
 
         
     
+class Checkout(View):
+    def get(self,request):
+        user_data = UserAddress.objects.filter(user=request.user)
+        user_cart = request.user.carts
+        subtotal = 0
+        sub=0
+        total_discount=0
+        cart_items = CartItem.objects.filter(cart=user_cart)
+        subtotal = sum(item.total_price for item in cart_items)
+        total_discount = sum(item.discount_price for item in cart_items)
+        sub = subtotal - total_discount
+        current_user = User.objects.filter(email=request.user.email).values('name', 'email').first()
+        
+        return render(request,'checkout.html',{'current_user':current_user,'user_data':user_data,'subtotal':subtotal,'sub':sub,'total_discount':total_discount,'cart_items':cart_items})
+    def post(self, request):
+        address_id=request.POST.get('address')
+        payment_method = request.POST.get('payment_method')
+        address = UserAddress.objects.get(id=address_id)
+        order = Order.objects.create(user=request.user, address=address, payment_mode=payment_method)
+        
+        for item in request.user.carts.cartitems.all():
+            
+            product_variant = item.product_variant    
+            OrderItem.objects.create(order=order, Product_variant=product_variant)
+           
+            if payment_method == 'cod':
+                order.status = 'success'
+                messages.success(request, 'Order placed successfully! You have selected Cash on Delivery.')
+                order.save()
+        return redirect('home')
+       
+class OrderHistory(View):
+    def get(self, request):
+        user_data=User.objects.filter(email=request.user.email).values('name', 'email').first()
+        user_orders = Order.objects.filter(user=request.user)
+        order_items = OrderItem.objects.filter(order__in=user_orders)
+        return render(request, 'orderhistory.html', {'user_data': user_data, 'order_items': order_items})
+        
 
 
 class reset(View):
     def get(self,request):
+        
         return render(request,'reset.html')
 
 
@@ -187,7 +268,14 @@ class logout_view(View):
 
 
 
-
+ # if payment_method == 'online':
+            #     client = razorpay.Client(auth=(RAZORPAY_API_KEY,RAZORPAY_API_SECRET))
+            #     data = { "amount": request.user.cart.total_selling_price, "currency": "INR","receipt": str(order.id), }
+            #     payment = client.order.create(data=data)
+            #     order_id = payment["id"] 
+            #     order.razorpay_order_id = order_id
+            #     order.status = 'success'
+            #     order.save()
 
 
 

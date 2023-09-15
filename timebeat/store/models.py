@@ -26,6 +26,7 @@ class Brand(models.Model):
     name = models.CharField(max_length=200,null=False,blank=False)
     def __str__(self):
         return self.name
+
     
 class Product(models.Model):
     id = models.UUIDField(primary_key=True,editable=False,default=uuid.uuid4)
@@ -36,6 +37,8 @@ class Product(models.Model):
     name = models.CharField(max_length=300,null=False,blank=False)
     
     description = models.CharField(max_length=500,null=True,blank=True)
+    created_at=models.DateTimeField(auto_now=True)
+    
    
     def __str__(self):
         return self.name
@@ -61,6 +64,7 @@ class Variant(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE,related_name="variants")
     original_price=models.FloatField(null=True)
     selling_price=models.FloatField(null=True)
+    created_at=models.DateTimeField(auto_now=True)
    
     # def __str__(self):
     #     return self.name

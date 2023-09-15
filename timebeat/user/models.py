@@ -32,4 +32,53 @@ class UserAddress(models.Model):
   landmark = models.CharField(max_length=200)
   pincode = models.CharField(max_length=6)
 
+class Order(models.Model):
+   id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
+   user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
+   address = models.ForeignKey(UserAddress, on_delete=models.CASCADE, related_name='orders')
+   payment_mode=models.CharField(max_length=250,null=False )
+   orderstatuses=(
+       ('pending','pending'),
+       ('Out For Shipping','Out For Shipping'),
+       ('Completed','Completed'),
+       )
+   status=models.CharField(max_length=150,choices=orderstatuses,default='pending')
+   message=models.TextField(null=True)
+   tracking_no=models.CharField( max_length=250,null=True)
+   created_at=models.DateTimeField(auto_now=True)
+   
+class OrderItem(models.Model):
+    id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
+    order=models.ForeignKey(Order,on_delete=models.CASCADE,related_name='orderitems')
+    Product_variant=models.ForeignKey(Variant,on_delete=models.CASCADE,related_name='orderitems')
+   
+
+
+
+
+
+
+
+#  payment_id=models.CharField(max_length=250,null=True)
+ 
+  #  status=models.CharField(max_length=150,choices=orderstatuses,default='pending')
+  #  message=models.TextField(null=True)
+  #  tracking_no=models.CharField( max_length=250,null=True)
+  #  created_at=models.DateTimeField(auto_now=True)
+
+  #  def __str__(self):
+  #     return '{} - {}'.format(self.id,self.tracking_no)
+
+
+
+
+    # def __str__(self):
+    #   return '{} - {}'.format(self.order.id,self.tracking_no)
+
+# class PaymentMethod(models.Model):
+#     id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
+#     name = models.CharField(max_length=255)
+
+#     def __str__(self):
+#         return self.name
 

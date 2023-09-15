@@ -10,6 +10,8 @@ urlpatterns=[
     path('reset/',views.reset.as_view(),name='reset'),
     path('productlist/',views.productlist.as_view(),name='productlist'),
     path('userprofile/',views.userprofile.as_view(),name='profile'),
+    path('checkout/',views.Checkout.as_view(),name='checkout'),
+    path('order_history/',views.OrderHistory.as_view(),name='orderhistory'),
     
     path('logout/',views.logout_view.as_view(),name='logout'),
    
