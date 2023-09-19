@@ -3,6 +3,8 @@ from . manager import CustomUserManager
 from django.db import models
 from store.models import *
 import uuid
+from datetime import datetime, timedelta
+
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -40,17 +42,26 @@ class Order(models.Model):
    orderstatuses=(
        ('pending','pending'),
        ('Out For Shipping','Out For Shipping'),
-       ('Completed','Completed'),
+       ('Deliverd','Deliverd'),
+       ('cancelled','cancelled'),
+       ('returned','returned')
        )
    status=models.CharField(max_length=150,choices=orderstatuses,default='pending')
    message=models.TextField(null=True)
-   tracking_no=models.CharField( max_length=250,null=True)
-   created_at=models.DateTimeField(auto_now=True)
+   created_at = models.DateTimeField(auto_now=True)
+   expected_delivery = models.DateTimeField(blank=True, null=True)
+
+   def save(self, *args, **kwargs):
+        if self.created_at and not self.expected_delivery:
+            self.expected_delivery = self.created_at + timedelta(days=3)
+        super().save(*args, **kwargs)
    
 class OrderItem(models.Model):
     id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
     order=models.ForeignKey(Order,on_delete=models.CASCADE,related_name='orderitems')
     Product_variant=models.ForeignKey(Variant,on_delete=models.CASCADE,related_name='orderitems')
+    count=models.PositiveSmallIntegerField(default=1)
+    total_price = models.IntegerField(default=0)
    
 
 

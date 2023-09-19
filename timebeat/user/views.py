@@ -235,23 +235,27 @@ class Checkout(View):
 
         for item in request.user.carts.cartitems.all():
             product_variant = item.product_variant
-            OrderItem.objects.create(order=order, Product_variant=product_variant)
+            total_price = item.total_price
+            count = item.count
+
+            OrderItem.objects.create(order=order, Product_variant=product_variant,total_price = total_price,count=count)
 
         if payment_method == 'cod':
-            order.status = 'success'
+            # order.status = 'success'
             messages.success(request, 'Order placed successfully! You have selected Cash on Delivery.')
             order.save()
-            return render(request, 'payment_success.html')  # Create this template.
+            return redirect('home')  # Create this template.
 
         elif payment_method == 'online':
             
-                client = razorpay.Client(auth=(RAZORPAY_API_KEY,RAZORPAY_API_SECRET))
-                data = { "amount": request.user.cart.total_selling_price, "currency": "INR","receipt": str(order.id), }
-                payment = client.order.create(data=data)
-                order_id = payment["id"] 
-                order.razorpay_order_id = order_id
-                order.status = 'success'
-                order.save()
+            client = razorpay.Client(auth=(RAZOR_KEY_ID,RAZOR_KEY_SECRET))
+            data = { "amount": request.user.cart.total_selling_price, "currency": "INR","receipt": str(order.id), }
+            payment = client.order.create(data=data)
+            order_id = payment["id"] 
+            order.razorpay_order_id = order_id
+            # order.status = 'success'
+            order.save()
+        
 
 
         return redirect('home')  # Default to checkout page.
@@ -266,7 +270,7 @@ class OrderHistory(View):
         user_data=User.objects.filter(email=request.user.email).values('name', 'email').first()
         user_orders = Order.objects.filter(user=request.user)
         order_items = OrderItem.objects.filter(order__in=user_orders)
-        return render(request, 'orderhistory.html', {'user_data': user_data, 'order_items': order_items})
+        return render(request, 'orderhistory.html', {'user_data': user_data,'user_orders':user_orders,'order_items':order_items})
         
 
 
