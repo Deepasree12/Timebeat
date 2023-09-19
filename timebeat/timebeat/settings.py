@@ -92,7 +92,8 @@ DATABASES = {
         'PORT': '5432', 
     }
 }
-
+RAZOR_KEY_ID = 'rzp_test_8tTqQg8LQil3JX'
+RAZOR_KEY_SECRET ='VRrIR287Z3zxo1Kp4ZPzamte'
 
 AUTH_USER_MODEL = 'user.User'
 # Password validation

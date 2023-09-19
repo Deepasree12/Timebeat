@@ -1,6 +1,8 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from .models import * 
 from user.models import * 
+from django.http import JsonResponse
+
 # from .form import Catform
 
 from django.views import View
@@ -159,7 +161,30 @@ class Varient_view(View):
 
         return redirect('productvarient',pk=pk)
 
+class Order_view(View):
 
+    def get(self, request):
+        orders=Order.objects.all()
+        return render(request, 'adminorder.html',{'orders':orders})
+
+class UpdateOrderStatus(View):
+    def post(self, request):
+        if request.is_ajax():
+            order_id = request.POST.get('id')
+            status = request.POST.get('status', 'Delivered')  # Default status
+            
+            # Update the status of the order in the database
+            try:
+                order = Order.objects.get(id=order_id)
+                order.status = status
+                order.save()
+                return JsonResponse({'success': True})
+            except Order.DoesNotExist:
+                return JsonResponse({'success': False, 'message': 'Order not found'})
+        
+        return JsonResponse({'success': False, 'message': 'Invalid request'})
+            
+    
   
 
 

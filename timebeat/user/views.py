@@ -19,6 +19,8 @@ from user.models import User
 from django.db.models import Q
 from django.core.paginator import Paginator
 from datetime import datetime, timedelta
+import razorpay
+from timebeat.settings import RAZOR_KEY_ID,RAZOR_KEY_SECRET
 
 
 class index(View):
@@ -151,18 +153,21 @@ class productlist(View):
         {"value": "2000-3000", "min": 2000, "max": 3000},
         {"value": "3000-4000", "min": 3000, "max": 4000},
         {"value": "4000-5000", "min": 4000, "max": 5000},
-        {"value": "5000-", "min": 5000, "max": None},  ]
+        {"value": "5000-", "min": 5000, "max": None},]
         
         if sort:
             if sort == 'low_to_high':
                 variants = sorted(variants, key=lambda x: x.selling_price)
             elif sort == 'high_to_low':
                 variants = sorted(variants, key=lambda x: x.selling_price, reverse=True)
-            elif sort == 'new_arrivals':
-                products = products.order_by('-created_at')[:10]
-                variants = [product.variants.order_by('selling_price').first() for product in products]
-                       
-        paginator = Paginator(variants, 2)
+        if  'new_arrivals':
+        
+                seven_days_ago = datetime.now() - timedelta(days=7)
+                products = products.filter(created_at__gte=seven_days_ago)
+                variants = [product.variants.order_by('-created_at').first() for product in products]
+
+
+        paginator = Paginator(variants, 9)
         page = paginator.get_page(page_number)
         
         
@@ -202,38 +207,59 @@ class userprofile(LoginRequiredMixin,View):
 
         return redirect('profile')
 
-        
     
 class Checkout(View):
-    def get(self,request):
+    def get(self, request):
         user_data = UserAddress.objects.filter(user=request.user)
         user_cart = request.user.carts
-        subtotal = 0
-        sub=0
-        total_discount=0
         cart_items = CartItem.objects.filter(cart=user_cart)
         subtotal = sum(item.total_price for item in cart_items)
         total_discount = sum(item.discount_price for item in cart_items)
         sub = subtotal - total_discount
         current_user = User.objects.filter(email=request.user.email).values('name', 'email').first()
-        
-        return render(request,'checkout.html',{'current_user':current_user,'user_data':user_data,'subtotal':subtotal,'sub':sub,'total_discount':total_discount,'cart_items':cart_items})
+
+        return render(request, 'checkout.html', {
+            'current_user': current_user,
+            'user_data': user_data,
+            'subtotal': subtotal,
+            'sub': sub,
+            'total_discount': total_discount,
+            'cart_items': cart_items,
+        })
+
     def post(self, request):
-        address_id=request.POST.get('address')
+        address_id = request.POST.get('address')
         payment_method = request.POST.get('payment_method')
         address = UserAddress.objects.get(id=address_id)
         order = Order.objects.create(user=request.user, address=address, payment_mode=payment_method)
-        
+
         for item in request.user.carts.cartitems.all():
-            
-            product_variant = item.product_variant    
+            product_variant = item.product_variant
             OrderItem.objects.create(order=order, Product_variant=product_variant)
-           
-            if payment_method == 'cod':
+
+        if payment_method == 'cod':
+            order.status = 'success'
+            messages.success(request, 'Order placed successfully! You have selected Cash on Delivery.')
+            order.save()
+            return render(request, 'payment_success.html')  # Create this template.
+
+        elif payment_method == 'online':
+            
+                client = razorpay.Client(auth=(RAZORPAY_API_KEY,RAZORPAY_API_SECRET))
+                data = { "amount": request.user.cart.total_selling_price, "currency": "INR","receipt": str(order.id), }
+                payment = client.order.create(data=data)
+                order_id = payment["id"] 
+                order.razorpay_order_id = order_id
                 order.status = 'success'
-                messages.success(request, 'Order placed successfully! You have selected Cash on Delivery.')
                 order.save()
-        return redirect('home')
+
+
+        return redirect('home')  # Default to checkout page.
+
+
+                
+        
+        
        
 class OrderHistory(View):
     def get(self, request):
