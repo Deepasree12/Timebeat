@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect,get_object_or_404
 from .models import * 
 from user.models import * 
 from django.http import JsonResponse
-
+from user.models import ORDERSTATUS
 # from .form import Catform
 
 from django.views import View
@@ -56,7 +56,7 @@ class Subcategory_view(View):
         name = request.POST.get('sub')
         cat = request.POST.get('category')
         image = request.FILES.get('image')
-        print(cat)
+       
         try:
             category = Category.objects.get(id=cat)
         except:
@@ -164,25 +164,28 @@ class Varient_view(View):
 class Order_view(View):
 
     def get(self, request):
-        orders=Order.objects.all()
-        return render(request, 'adminorder.html',{'orders':orders})
+        orders = Order.objects.all()
+        return render(request, 'adminorder.html', {'orders': orders, 'status_choices': ORDERSTATUS})
 
-class UpdateOrderStatus(View):
     def post(self, request):
-        if request.is_ajax():
-            order_id = request.POST.get('id')
-            status = request.POST.get('status', 'Delivered')  # Default status
-            
-            # Update the status of the order in the database
-            try:
-                order = Order.objects.get(id=order_id)
-                order.status = status
-                order.save()
-                return JsonResponse({'success': True})
-            except Order.DoesNotExist:
-                return JsonResponse({'success': False, 'message': 'Order not found'})
+        order_id = int(request.POST.get('order_id'))
+        status = request.POST.get('status')
         
-        return JsonResponse({'success': False, 'message': 'Invalid request'})
+        status_number = None  # Initialize the status_number variable
+        
+        for number, choice_text in ORDERSTATUS:
+            if status == choice_text:
+                status_number = number
+                break
+        
+        if status_number is not None:
+            order = Order.objects.get(id=order_id)
+            order.status = status_number
+            order.save()
+
+        
+        return redirect('order') 
+            
             
     
   

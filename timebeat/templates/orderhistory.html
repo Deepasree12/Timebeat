@@ -343,7 +343,7 @@
 									<th class="th-sm">PAYMENT MODE</th>
 									<th class="th-sm">STATUS</th>
 									<th class="th-sm">EXPECTED DELIVERY</th>
-									<th class="th-sm">Cancel</th>
+									<th class="th-sm">ACTION</th>
 									<th class="th-sm">VIEW</th>
 									
 									
@@ -359,11 +359,21 @@
 									<td>{{item.id}}</td>
 									<td>{{item.created_at}}</td>
 									<td>{{item.payment_mode}}</td>
-									<td style="color:green;">{{item.status}}</td>
+									<td><a href="" class="btn btn-primary" title="Track Status">{{item.get_status_display}}</a></td>
 									<td>{{item.expected_delivery}}</td>
 									
-									<td><button class="btn btn-danger  my-auto"  data-bs-target="#cancel_order" type="button">Cancel</button></td>
-									<div>
+									<td>
+										{% if item.status < 4 %}
+												<a href="/change-order-status/{{item.id}}/?status=5" class="btn btn-danger" title="Cancel Order">Cancel</a>
+										{% endif %}
+										{% if item.status == 4 %}
+												<a href="/change-order-status/{{item.id}}/?status=6" class="btn btn-success" title="Return Order">Return</a>
+										{% endif %}
+										{% if item.status == 5 or item.status == 6 %}
+												-----
+										{% endif %}
+								</td>
+								<div>
 										<td>
 											<button class="btn btn-primary my-auto" data-bs-toggle="modal" data-bs-target="#orderViewModal" type="button">View</button>
 									</td>

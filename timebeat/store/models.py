@@ -1,6 +1,6 @@
 from django.db import models
 import uuid
-
+from django.db.models import Avg
 # Create your models here.
 class Category(models.Model):
     id = models.UUIDField(primary_key=True,editable=False,default=uuid.uuid4)
@@ -40,8 +40,11 @@ class Product(models.Model):
     created_at=models.DateTimeField(auto_now=True)
     
    
-    def __str__(self):
-        return self.name
+    @property
+    def average_rating(self):
+        return self.reviews.aggregate(Avg('rate'))['rate__avg']
+
+
     
 
 

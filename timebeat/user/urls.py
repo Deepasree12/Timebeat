@@ -12,9 +12,9 @@ urlpatterns=[
     path('userprofile/',views.userprofile.as_view(),name='profile'),
     path('checkout/',views.Checkout.as_view(),name='checkout'),
     path('order_history/',views.OrderHistory.as_view(),name='orderhistory'),
-    
+    path('change-order-status/', views.change_order_status, name="change_order_status"),
     path('logout/',views.logout_view.as_view(),name='logout'),
-   
+    path('UserAddAddress/',views.UserAddAddress.as_view(),name='addAddress'),
     path('productview/<uuid:pk>/', views.productdetail.as_view(), name='productdetail'),
     
     

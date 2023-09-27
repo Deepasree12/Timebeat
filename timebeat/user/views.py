@@ -21,6 +21,7 @@ from django.core.paginator import Paginator
 from datetime import datetime, timedelta
 import razorpay
 from timebeat.settings import RAZOR_KEY_ID,RAZOR_KEY_SECRET
+from django.http import JsonResponse
 
 
 class index(View):
@@ -109,6 +110,7 @@ class productlist(View):
     def get(self,request):
         sort=request.GET.get('sort')
         search_key = request.GET.get('search')
+        new_arrivals=request.GET.get('new')
        
         brand_filter = request.GET.getlist('brand_items')
         color_filter = request.GET.getlist('color_items')
@@ -160,28 +162,61 @@ class productlist(View):
                 variants = sorted(variants, key=lambda x: x.selling_price)
             elif sort == 'high_to_low':
                 variants = sorted(variants, key=lambda x: x.selling_price, reverse=True)
-        if  'new_arrivals':
-        
-                seven_days_ago = datetime.now() - timedelta(days=7)
-                products = products.filter(created_at__gte=seven_days_ago)
-                variants = [product.variants.order_by('-created_at').first() for product in products]
 
+        if new_arrivals == 'new_arrivals':
+            seven_days_ago = datetime.now() - timedelta(days=7)
+            products = Product.objects.filter(created_at__gte=seven_days_ago)
+            variants = [product.variants.order_by('-created_at').first() for product in products]
+        else: 
+            products = Product.objects.order_by('-created_at')[:10]  # Get the top 10 most recently added products
+            variants = [product.variants.order_by('-created_at').first() for product in products]
 
-        paginator = Paginator(variants, 9)
+        context = {
+        'products': products,
+        'variants': variants,
+        }
+        paginator = Paginator(variants, 2)  
         page = paginator.get_page(page_number)
         
         
         return render(request,'productlist.html',{"page":page,"brands":brands,"colors":colors,'brand_filter':brand_filter, 'color_filter':color_filter,'price_ranges': price_ranges,
-            'min_price': min_price, 'max_price': max_price  })
+            'min_price': min_price, 'max_price': max_price,'context':context  })
   
 
 class productdetail(View):
     def get(self,request,pk):
-       
+        reviews=0
+        rating_data={}
         varient = get_object_or_404(Variant, pk=pk)
+        current_user = request.user
+        product = varient.product
+        reviews = Review.objects.filter(product=product)
+        if varient.product.reviews.all():
+            reviews = Review.objects.filter(product=varient.product)
+            # current_user_review = reviews.filter(user=request.user).first()
+        for rating_value in range(5,0,-1):
+            rating_count = reviews.filter(rate=rating_value).count()
+            rating_percentage = rating_count/len(reviews)*100 
+            rating_data[rating_value] = {'count':rating_count,'percentage':rating_percentage}
+            reviews.current_user_review=reviews.filter(user=request.user).first() if request.user.is_authenticated else None
+        varient.is_in_order=False
+        if request.user.is_authenticated:
+            for order in request.user.orders.all():
+                 for item in order.orderitems.all():
+                    if varient.product == item.Product_variant.product:
+                        varient.is_in_order = True
+                        break
+        return render(request,'productdetail.html',{"varient":varient,'current_user':current_user,'reviews':reviews,'rating_data':rating_data,})
+    def post(self,request,pk):
+
+        comment = request.POST.get('review')
+        rating=request.POST.get('rating')
+        variant = get_object_or_404(Variant, pk=pk)
+        product = variant.product 
         
-        
-        return render(request,'productdetail.html',{"varient":varient})
+        review,created = Review.objects.update_or_create(user=request.user,product=product,
+                                                         defaults={'comment':comment, 'rate':rating})
+        return redirect(request.META.get('HTTP_REFERER'))
     
 
 class userprofile(LoginRequiredMixin,View):
@@ -189,8 +224,9 @@ class userprofile(LoginRequiredMixin,View):
         user_data = UserAddress.objects.filter(user=request.user)
         current_user = User.objects.filter(email=request.user.email).values('name', 'email').first()
         return render(request,'userprofile.html',{'current_user':current_user,'user_data':user_data})
+    
 
-
+class UserAddAddress(View):
     def post(self, request):
       
         name = request.POST.get('name')
@@ -230,6 +266,7 @@ class Checkout(View):
     def post(self, request):
         address_id = request.POST.get('address')
         payment_method = request.POST.get('payment_method')
+        print(payment_method)
         address = UserAddress.objects.get(id=address_id)
         order = Order.objects.create(user=request.user, address=address, payment_mode=payment_method)
 
@@ -241,36 +278,47 @@ class Checkout(View):
             OrderItem.objects.create(order=order, Product_variant=product_variant,total_price = total_price,count=count)
 
         if payment_method == 'cod':
-            # order.status = 'success'
-            messages.success(request, 'Order placed successfully! You have selected Cash on Delivery.')
+            # messages.success(request, 'Order placed successfully! You have selected Cash on Delivery.')
             order.save()
-            return redirect('home')  # Create this template.
+            return redirect('home')  
 
         elif payment_method == 'online':
-            
-            client = razorpay.Client(auth=(RAZOR_KEY_ID,RAZOR_KEY_SECRET))
-            data = { "amount": request.user.cart.total_selling_price, "currency": "INR","receipt": str(order.id), }
+                
+            client = razorpay.Client(auth=('rzp_test_8tTqQg8LQil3JX','VRrIR287Z3zxo1Kp4ZPzamte'))
+            data = { "amount":request.user.Cart.total_selling_price, "currency": "INR","receipt": str(order.id), }
             payment = client.order.create(data=data)
             order_id = payment["id"] 
             order.razorpay_order_id = order_id
             # order.status = 'success'
             order.save()
+
+        return redirect('home')
         
 
 
-        return redirect('home')  # Default to checkout page.
-
-
-                
-        
-        
-       
 class OrderHistory(View):
     def get(self, request):
         user_data=User.objects.filter(email=request.user.email).values('name', 'email').first()
         user_orders = Order.objects.filter(user=request.user)
         order_items = OrderItem.objects.filter(order__in=user_orders)
         return render(request, 'orderhistory.html', {'user_data': user_data,'user_orders':user_orders,'order_items':order_items})
+
+
+
+def change_order_status(request,id):
+    # Retrieve the order
+    order = get_object_or_404(Order, id=id)
+
+    # Check if a status parameter is provided in the URL
+    new_status = request.GET.get('status')
+
+    if new_status is not None:
+        # Update the order status
+        order.status = int(new_status)
+        order.save()
+
+    
+    return redirect('orderhistory')
         
 
 

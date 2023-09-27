@@ -52,27 +52,11 @@ def add_to_cart(request, pk):
 def shopping_cart(request):
     if request.user.is_authenticated:
         user_cart = request.user.carts
-        if cart_items := CartItem.objects.filter(cart=user_cart):
-       
-            subtotal = 0
-            total_discount=0
-            sub=0
+        
+        if cart_items := CartItem.objects.filter(cart=user_cart).order_by('id'):
+    
 
-            subtotal = sum(item.total_price for item in cart_items)
-            total_discount = sum(item.discount_price for item in cart_items)
-            
-            
-            sub = subtotal - total_discount
-
-            context = {
-                'cart_items': cart_items,
-                'subtotal': subtotal,
-                'total_discount': total_discount,
-                
-                'sub': sub,
-            }
-
-            return render(request, 'shoping_cart.html', context)
+            return render(request, 'shoping_cart.html', {'cart_items': cart_items,'user_cart':user_cart})
         else:
             return render(request, 'emptycart.html')
     

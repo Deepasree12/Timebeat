@@ -278,9 +278,11 @@
 							</a>
 						</li>
 					</button>
-					<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".men" onclick="sorting('new_arrivals')" style="cursor: pointer;">
+					
+				<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".men">
+					<li class=" p-b-6" onclick="filterNew('new_arrivals')" style="cursor: pointer;">
 						New Arrivals
-						
+				</li>
 				</button>
 					<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".men">
 						<li class="p-b-6" onclick="sorting('high_to_low')" style="cursor: pointer;">
@@ -366,26 +368,21 @@
 
 						<div class="filter-col2 p-r-15 p-b-27">
 							<div class="mtext-102 cl2 p-b-15">
-								Price
+									Price
 							</div>
-
 							<ul>
-								
-
-								<div class="form-check">
-									{% for price_range in price_ranges %}
-											<input class="form-check-input" type="checkbox" value="{{ price_range.value }}" id="price{{ forloop.counter }}" name="price_range"
-											{% if price_range.value in price_range_filters %}checked{% endif %}>
-											<label class="form-check-label" for="price{{ forloop.counter }}">
-											₹ {{ price_range.min }} - ₹ {{ price_range.max }}
-											</label>
-											<br>
-									{% endfor %}
-
-							</div>
-							
+									<div class="form-check">
+											{% for price_range in price_ranges %}
+													<input class="form-check-input price-checkbox" type="checkbox" value="{{ price_range.value }}" id="price{{ forloop.counter }}" name="price_range" data-min="{{ price_range.min }}" data-max="{{ price_range.max }} onchange="price(this, '{{ brand.name }}')" {% if brand.name in brand_filter %}checked{% endif %}">
+													<label class="form-check-label" for="price{{ forloop.counter }}">
+															₹ {{ price_range.min }} - ₹ {{ price_range.max }}
+													</label>
+													<br>
+											{% endfor %}
+									</div>
 							</ul>
-						</div>
+					</div>
+					
 
 						<div class="filter-col3 p-r-15 p-b-27">
 							<div class="mtext-102 cl2 p-b-15">
@@ -413,6 +410,7 @@
 
 			<div class="container">
 				<div class="row">
+					
 						{% for variant in page %}
 								{% comment %} {% if product.variants.all %} {% endcomment %}
 										<div class="col-sm-6 col-md-4 col-lg-3 mb-4">
@@ -424,10 +422,17 @@
 																</a>
 														</div>
 														<div class="block2-txt flex-w flex-t p-t-14">
+															{% if variant.product.average_rating %}
+																		
+																		<span class="text-secondary h6" id="ratings1" ><i class="bi bi-star-fill text-warning"></i></span>Rating({{ variant.product.average_rating}})
+																		{%else%}
+																		<span class="text-secondary h4" id="ratings1" ><i class="bi bi-star-fill"></i></span>Be the first
+																		{% endif %}
 																<div class="block2-txt-child1 flex-col-l">
 																		<a href="{% url 'productdetail' pk=variant.pk %}" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
 																				{{ variant.product.name }}
 																		</a>
+																		
 																		<span class="stext-105 cl3">
 																			{{ variant.product.brand }}
 																	</span>
@@ -730,19 +735,30 @@ function price(checkbox) {
 
 
 
-		function pagination(page_number){
-			urlparams.set('page', page_number);
-			currentUrl.search = urlparams.toString();
-			window.location.href = currentUrl.toString();
-		}
-		
-		function sorting(sortby) {
-			urlparams.set('page', 1);
-			urlparams.set('sort', sortby);
-			currentUrl.search = urlparams.toString();
-			window.location.href = currentUrl.toString();
-		}
-		
+function pagination(page_number){
+	urlparams.set('page', page_number);
+	currentUrl.search = urlparams.toString();
+	window.location.href = currentUrl.toString();
+}
+
+function sorting(sortby) {
+	urlparams.set('page', 1);
+	urlparams.set('sort', sortby);
+	currentUrl.search = urlparams.toString();
+	window.location.href = currentUrl.toString();
+}
+function filterNew(newarrivals) {
+	var urlparams = new URLSearchParams(window.location.search);
+	urlparams.set('new', newarrivals);
+	
+	// Get the current URL and append the updated query parameters
+	var currentUrl = new URL(window.location.href);
+	currentUrl.search = urlparams.toString();
+	
+	// Redirect to the updated URL
+	window.location.href = currentUrl.toString();
+}
+
 </script>
 
 <!--===============================================================================================-->	
