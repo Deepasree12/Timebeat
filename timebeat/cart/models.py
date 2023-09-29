@@ -14,6 +14,8 @@ class Cart(models.Model):
    total_selling_price = models.IntegerField(default=0)
    total_actual_price = models.IntegerField(default=0) 
    total_discount_price = models.IntegerField(default=0)
+   coupon_discount_price = models.IntegerField(default=0)
+   final_price=models.IntegerField(default=0)
  
    def __str__(self):
       return self.id
@@ -43,4 +45,5 @@ def calculate_cart_totals(sender, instance, **kwargs):
    cart.total_selling_price = cart_items.aggregate(Sum('total_price'))['total_price__sum'] or 0
    cart.total_actual_price = cart_items.aggregate(Sum('total_actual_price'))['total_actual_price__sum'] or 0
    cart.total_discount_price = cart.total_actual_price - cart.total_selling_price
+   cart.final_price=cart.total_selling_price - cart.coupon_discount_price
    cart.save()

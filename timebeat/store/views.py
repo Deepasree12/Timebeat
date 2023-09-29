@@ -3,7 +3,7 @@ from .models import *
 from user.models import * 
 from django.http import JsonResponse
 from user.models import ORDERSTATUS
-# from .form import Catform
+from datetime import date
 
 from django.views import View
 
@@ -185,9 +185,20 @@ class Order_view(View):
 
         
         return redirect('order') 
-            
-            
+
+class CouponManagemnet(View):
+    def get(self,request):
+
+        current_date = datetime.today().strftime("%Y-%m-%d")
+        return render(request, 'admincoupon.html',{'current_date':current_date})
     
-  
-
-
+    def post(self,request):
+        coupon_code = request.POST.get('coupon')
+        details = request.POST.get('coupondetails')
+        count = request.POST.get('couponcount')
+        discount_price=request.POST.get('discount')
+        minimum=request.POST.get('minimum')
+        startdate=request.POST.get('startdate')
+        enddate=request.POST.get('enddate')
+        Coupon.objects.create(coupon_code=coupon_code, details=details, count=count,discount_price=discount_price,minimum_amount=minimum,start_date=startdate,end_date=enddate)
+        return redirect('coupon')

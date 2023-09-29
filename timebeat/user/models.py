@@ -4,7 +4,7 @@ from django.db import models
 from store.models import *
 import uuid
 from datetime import datetime, timedelta
-
+from datetime import date
 
 
 
@@ -66,7 +66,7 @@ class Review(models.Model):
 
 class Coupon(models.Model):
    id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
-   coupon_code=models.CharField(max_length=100)
+   coupon_code=models.CharField(max_length=100,unique=True)
    details=models.CharField(max_length=250)
    count=models.PositiveIntegerField(default=100)
    discount_price=models.IntegerField(default=100)
@@ -74,15 +74,14 @@ class Coupon(models.Model):
    start_date=models.DateField(auto_now_add=True)
    end_date=models.DateField(auto_now_add=True)
 
-  # @property
-  #   def status(self):
-    
-  #   if date.today() < self.start_date:
-  #       return "Upcoming"
-  #   elif date.today() <= self.end_date:
-  #       return "Active"
-  #   else:
-  #       return "Expired"
+@property
+def status(self):
+  if date.today() < self.start_date:
+      return "Upcoming"
+  elif self.start_date <= date.today() <= self.end_date:
+      return "Active"
+  else:
+      return "Expired"
 
 
 

@@ -196,7 +196,10 @@ class productdetail(View):
             # current_user_review = reviews.filter(user=request.user).first()
         for rating_value in range(5,0,-1):
             rating_count = reviews.filter(rate=rating_value).count()
-            rating_percentage = rating_count/len(reviews)*100 
+            try:
+                rating_percentage = rating_count/len(reviews)*100 
+            except:
+                rating_percentage =0
             rating_data[rating_value] = {'count':rating_count,'percentage':rating_percentage}
             reviews.current_user_review=reviews.filter(user=request.user).first() if request.user.is_authenticated else None
         varient.is_in_order=False
@@ -246,21 +249,19 @@ class UserAddAddress(View):
     
 class Checkout(View):
     def get(self, request):
+        coupon=Coupon.objects.all()
         user_data = UserAddress.objects.filter(user=request.user)
         user_cart = request.user.carts
         cart_items = CartItem.objects.filter(cart=user_cart)
-        subtotal = sum(item.total_price for item in cart_items)
-        total_discount = sum(item.discount_price for item in cart_items)
-        sub = subtotal - total_discount
-        current_user = User.objects.filter(email=request.user.email).values('name', 'email').first()
 
+        current_user = User.objects.filter(email=request.user.email).values('name', 'email').first()
+        
         return render(request, 'checkout.html', {
             'current_user': current_user,
             'user_data': user_data,
-            'subtotal': subtotal,
-            'sub': sub,
-            'total_discount': total_discount,
+            'cart':user_cart,
             'cart_items': cart_items,
+            'coupons':coupon
         })
 
     def post(self, request):
@@ -284,40 +285,46 @@ class Checkout(View):
 
         elif payment_method == 'online':
                 
-            client = razorpay.Client(auth=('rzp_test_8tTqQg8LQil3JX','VRrIR287Z3zxo1Kp4ZPzamte'))
+            client = razorpay.Client(auth=(RAZOR_KEY_ID,RAZOR_KEY_SECRET))
             data = { "amount":request.user.Cart.total_selling_price, "currency": "INR","receipt": str(order.id), }
             payment = client.order.create(data=data)
             order_id = payment["id"] 
             order.razorpay_order_id = order_id
-            # order.status = 'success'
+            order.status = 'success'
             order.save()
-
-        return redirect('home')
+            return redirect('home')
         
+        
+class ApplyCoupon(View):
+    def get(self, request,coupon_code):
+        
+        coupon = Coupon.objects.get(coupon_code=coupon_code)
+        cart = Cart.objects.get(user=request.user)
+        if cart.total_selling_price > coupon.minimum_amount:
+            cart.coupon_discount_price = coupon.discount_price
+        else:
+            cart.coupon_discount_price=0
+        cart.save()
+        return redirect(request.META.get('HTTP_REFERER'))
 
 
 class OrderHistory(View):
     def get(self, request):
-        user_data=User.objects.filter(email=request.user.email).values('name', 'email').first()
+        # user_data=User.objects.filter(email=request.user.email).values('name', 'email').first()
         user_orders = Order.objects.filter(user=request.user)
-        order_items = OrderItem.objects.filter(order__in=user_orders)
-        return render(request, 'orderhistory.html', {'user_data': user_data,'user_orders':user_orders,'order_items':order_items})
+        for order in user_orders:
+            print(order.orderitems)
+        return render(request, 'orderhistory.html', {'user_orders':user_orders})
 
 
 
 def change_order_status(request,id):
-    # Retrieve the order
     order = get_object_or_404(Order, id=id)
-
-    # Check if a status parameter is provided in the URL
     new_status = request.GET.get('status')
-
     if new_status is not None:
-        # Update the order status
+        
         order.status = int(new_status)
         order.save()
-
-    
     return redirect('orderhistory')
         
 

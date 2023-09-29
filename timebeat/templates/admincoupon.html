@@ -1,0 +1,65 @@
+{% extends 'adminhome.html' %}
+
+{% block index %}
+
+<div class="container mt-5">
+  <div class="row justify-content-center">
+      <div class="col-md-6">
+          <h2 class="mb-4">Coupon</h2>
+
+          <form action="{% url 'coupon' %}" method="post">
+            {% csrf_token %}
+        
+            <div class="mb-3">
+                <label for="coupon" class="form-label">Coupon Code</label>
+                <input type="text" class="form-control" id="coupon" name="coupon" required>
+            </div>
+        
+            <div class="mb-3">
+                <label for="couponcount" class="form-label">Coupon Count</label>
+                <input type="text" class="form-control" id="couponcount" name="couponcount" required>
+            </div>
+        
+            <div class="mb-3">
+                <label for="coupondetails" class="form-label">Coupon Details</label>
+                <input type="text" class="form-control" id="coupondetails" name="coupondetails" required>
+            </div>
+        
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="discount" class="form-label">Discount Price</label>
+                    <input type="number" class="form-control" id="discount" name="discount" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="minimum" class="form-label">Minimum Amount</label>
+                    <input type="number" class="form-control" id="minimum" name="minimum" required>
+                </div>
+            </div>
+        
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="startdate" class="form-label">Start Date</label>
+                    <input type="date" class="form-control" id="startdate" name="startdate" required min="{{ current_date }}">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="enddate" class="form-label">End Date</label>
+                    <input type="date" class="form-control" id="enddate" name="enddate" required>
+                </div>
+            </div>
+        
+            <button type="submit" class="btn btn-primary">Add Coupon</button>
+           
+        </form>
+        
+
+  
+  
+  {% endblock index %}
+  
+  
+  
+  
+  
+  
+      
+
