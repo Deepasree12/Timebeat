@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect,get_object_or_404
 from .models import * 
 from user.models import * 
 from django.http import JsonResponse
-from user.models import ORDERSTATUS
+
 from datetime import date
 
 from django.views import View
@@ -165,23 +165,23 @@ class Order_view(View):
 
     def get(self, request):
         orders = Order.objects.all()
-        return render(request, 'adminorder.html', {'orders': orders, 'status_choices': ORDERSTATUS})
+        return render(request, 'adminorder.html', {'orders': orders})
 
     def post(self, request):
         order_id = int(request.POST.get('order_id'))
         status = request.POST.get('status')
         
-        status_number = None  # Initialize the status_number variable
+        # status_number = None  # Initialize the status_number variable
         
-        for number, choice_text in ORDERSTATUS:
-            if status == choice_text:
-                status_number = number
-                break
+        # for number, choice_text in ORDERSTATUS:
+        #     if status == choice_text:
+        #         status_number = number
+        #         break
         
-        if status_number is not None:
-            order = Order.objects.get(id=order_id)
-            order.status = status_number
-            order.save()
+        # if status_number is not None:
+        #     order = Order.objects.get(id=order_id)
+        #     order.status = status_number
+        #     order.save()
 
         
         return redirect('order') 

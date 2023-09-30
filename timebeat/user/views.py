@@ -251,17 +251,21 @@ class Checkout(View):
     def get(self, request):
         coupon=Coupon.objects.all()
         user_data = UserAddress.objects.filter(user=request.user)
-        user_cart = request.user.carts
+        user_cart = request.user.cart
         cart_items = CartItem.objects.filter(cart=user_cart)
 
         current_user = User.objects.filter(email=request.user.email).values('name', 'email').first()
-        
+        client = razorpay.Client(auth=(RAZOR_KEY_ID,RAZOR_KEY_SECRET))
+        payment = client.order.create(dict(amount=request.user.cart.final_price*100,currency="INR",payment_capture=1))
+        payment_order_id=payment['id']
         return render(request, 'checkout.html', {
             'current_user': current_user,
             'user_data': user_data,
             'cart':user_cart,
             'cart_items': cart_items,
-            'coupons':coupon
+            'coupons':coupon,
+            'payment_API_key':RAZOR_KEY_ID,
+            'oder_id':payment_order_id
         })
 
     def post(self, request):
@@ -271,7 +275,7 @@ class Checkout(View):
         address = UserAddress.objects.get(id=address_id)
         order = Order.objects.create(user=request.user, address=address, payment_mode=payment_method)
 
-        for item in request.user.carts.cartitems.all():
+        for item in request.user.cart.cartitems.all():
             product_variant = item.product_variant
             total_price = item.total_price
             count = item.count
@@ -285,11 +289,11 @@ class Checkout(View):
 
         elif payment_method == 'online':
                 
-            client = razorpay.Client(auth=(RAZOR_KEY_ID,RAZOR_KEY_SECRET))
-            data = { "amount":request.user.Cart.total_selling_price, "currency": "INR","receipt": str(order.id), }
-            payment = client.order.create(data=data)
-            order_id = payment["id"] 
-            order.razorpay_order_id = order_id
+            # client = razorpay.Client(auth=(RAZOR_KEY_ID,RAZOR_KEY_SECRET))
+            # data = { "amount":request.user.Cart.total_selling_price, "currency": "INR","receipt": str(order.id), }
+            # payment = client.order.create(data=data)
+            # order_id = payment["id"] 
+            # order.razorpay_order_id = order_id
             order.status = 'success'
             order.save()
             return redirect('home')
@@ -310,13 +314,23 @@ class ApplyCoupon(View):
 
 class OrderHistory(View):
     def get(self, request):
-        # user_data=User.objects.filter(email=request.user.email).values('name', 'email').first()
         user_orders = Order.objects.filter(user=request.user)
-        for order in user_orders:
-            print(order.orderitems)
-        return render(request, 'orderhistory.html', {'user_orders':user_orders})
+        
+        # Retrieve the order items for the user's orders
+        user_order_items = OrderItem.objects.filter(order__in=user_orders)
+        
+        return render(request, 'orderhistory.html', {'user_orders':user_orders,'user_order_items':user_order_items})
 
+    def post(self,request,pk):
 
+        comment = request.POST.get('review')
+        rating=request.POST.get('rating')
+        variant = get_object_or_404(Variant, pk=pk)
+        product = variant.product 
+        
+        review,created = Review.objects.update_or_create(user=request.user,product=product,
+                                                         defaults={'comment':comment, 'rate':rating})
+        return redirect(request.META.get('HTTP_REFERER'))
 
 def change_order_status(request,id):
     order = get_object_or_404(Order, id=id)

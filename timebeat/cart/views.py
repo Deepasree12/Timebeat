@@ -51,7 +51,7 @@ def add_to_cart(request, pk):
     
 def shopping_cart(request):
     if request.user.is_authenticated:
-        user_cart = request.user.carts
+        user_cart = request.user.cart
         
         if cart_items := CartItem.objects.filter(cart=user_cart).order_by('id'):
     

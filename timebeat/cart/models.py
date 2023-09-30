@@ -9,7 +9,7 @@ from django.db.models import Sum
 
 class Cart(models.Model):
    id = models.UUIDField(primary_key=True,editable=False,default=uuid.uuid4)
-   user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='carts',default=True)
+   user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='cart',default=True)
    total_count = models.PositiveIntegerField(default=0)
    total_selling_price = models.IntegerField(default=0)
    total_actual_price = models.IntegerField(default=0) 

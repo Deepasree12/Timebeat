@@ -808,13 +808,13 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
 var options = {
-    "key": "rzp_test_8tTqQg8LQil3JX", 
-    "amount": "{{ sub }}00", 
-    "currency": "INR",
+    "key": "{{payment_API_key}}", 
+    //"amount": "{{ sub }}00", 
+    //"currency": "INR",
     "name": "Timebeat",
     "description": "Test Transaction",
-    "image": "https://example.com/your_logo",
-    "order_id": "{{ payment.id }}", 
+    "image": "{% static '/images/sm.jpg' %}",
+    "order_id": "{{ oder_id }}", 
     "handler": function (response){
         alert(response.razorpay_payment_id);
         alert(response.razorpay_order_id);

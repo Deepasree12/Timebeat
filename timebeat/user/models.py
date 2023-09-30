@@ -35,13 +35,13 @@ class UserAddress(models.Model):
   landmark = models.CharField(max_length=200)
   pincode = models.CharField(max_length=6)
 
-ORDERSTATUS = ((1, "Pending"), (2, "Dispatch"), (3, "On the way"), (4, "Delivered"), (5, "Cancelled"), (6, "Returned"))
+#  ORDERSTATUS = ((1, "Pending"), (2, "Dispatch"), (3, "On the way"), (4, "Delivered"), (5, "Cancelled"), (6, "Returned"))
 class Order(models.Model):
    id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
    address = models.ForeignKey(UserAddress, on_delete=models.CASCADE, related_name='orders')
    payment_mode=models.CharField(max_length=250,null=False )
-   status = models.IntegerField(choices=ORDERSTATUS, default=1)
+   status = models.CharField(max_length=100,null=True)
    created_at = models.DateTimeField(auto_now=True)
    expected_delivery = models.DateTimeField(blank=True, null=True)
 
