@@ -13,6 +13,7 @@ urlpatterns=[
     path('checkout/',views.Checkout.as_view(),name='checkout'),
     path('order_history/',views.OrderHistory.as_view(),name='orderhistory'),
     path('change-order-status/', views.change_order_status, name="change_order_status"),
+    path('orderdetail/',views.OrderDetails.as_view(),name='orderdetail'),
     path('logout/',views.logout_view.as_view(),name='logout'),
     path('applycoupon/<str:coupon_code>',views.ApplyCoupon.as_view(),name='applycoupon'),
     path('UserAddAddress/',views.UserAddAddress.as_view(),name='addAddress'),

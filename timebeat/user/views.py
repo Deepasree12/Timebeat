@@ -289,11 +289,11 @@ class Checkout(View):
 
         elif payment_method == 'online':
                 
-            # client = razorpay.Client(auth=(RAZOR_KEY_ID,RAZOR_KEY_SECRET))
-            # data = { "amount":request.user.Cart.total_selling_price, "currency": "INR","receipt": str(order.id), }
-            # payment = client.order.create(data=data)
-            # order_id = payment["id"] 
-            # order.razorpay_order_id = order_id
+            client = razorpay.Client(auth=(RAZOR_KEY_ID,RAZOR_KEY_SECRET))
+            data = { "amount":request.user.Cart.total_selling_price, "currency": "INR","receipt": str(order.id), }
+            payment = client.order.create(data=data)
+            order_id = payment["id"] 
+            order.razorpay_order_id = order_id
             order.status = 'success'
             order.save()
             return redirect('home')
@@ -315,17 +315,14 @@ class ApplyCoupon(View):
 class OrderHistory(View):
     def get(self, request):
         user_orders = Order.objects.filter(user=request.user)
-        
-        # Retrieve the order items for the user's orders
         user_order_items = OrderItem.objects.filter(order__in=user_orders)
-        
         return render(request, 'orderhistory.html', {'user_orders':user_orders,'user_order_items':user_order_items})
 
     def post(self,request,pk):
 
         comment = request.POST.get('review')
         rating=request.POST.get('rating')
-        variant = get_object_or_404(Variant, pk=pk)
+        variant = get_object_or_404(Variant, pk=pk) 
         product = variant.product 
         
         review,created = Review.objects.update_or_create(user=request.user,product=product,
@@ -341,7 +338,12 @@ def change_order_status(request,id):
         order.save()
     return redirect('orderhistory')
         
-
+class OrderDetails(View):
+    def get(self,request):
+        
+        user_orders = Order.objects.filter(user=request.user)
+        user_order_items = OrderItem.objects.filter(order__in=user_orders)
+        return render(request, 'orderdetail.html', {'user_orders':user_orders,'user_order_items':user_order_items})
 
 class reset(View):
     def get(self,request):
