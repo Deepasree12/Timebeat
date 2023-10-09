@@ -32,7 +32,7 @@ class CartItem(models.Model):
    def save(self, *args, **kwargs):
     self.total_price = self.count*self.product_variant.selling_price
     self.total_actual_price = self.count*self.product_variant.original_price
-    self.discount_price=self.product_variant.original_price-self.product_variant.selling_price
+    self.discount_price=self.total_actual_price-self.total_price
     super(CartItem, self).save(*args, **kwargs)
    def __str__(self):
         return f'CartItem - {self.id}'
@@ -44,6 +44,5 @@ def calculate_cart_totals(sender, instance, **kwargs):
    cart.total_count = cart_items.aggregate(Sum('count'))['count__sum'] or 0
    cart.total_selling_price = cart_items.aggregate(Sum('total_price'))['total_price__sum'] or 0
    cart.total_actual_price = cart_items.aggregate(Sum('total_actual_price'))['total_actual_price__sum'] or 0
-   cart.total_discount_price = cart.total_actual_price - cart.total_selling_price
-   cart.final_price=cart.total_selling_price - cart.coupon_discount_price
+   cart.total_discount_price=cart.total_actual_price - cart.total_selling_price
    cart.save()

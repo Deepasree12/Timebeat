@@ -5,6 +5,9 @@ from store.models import *
 import uuid
 from datetime import datetime, timedelta
 from datetime import date
+from django.dispatch import receiver
+from django.db.models import Sum
+from django.db.models.signals import post_save, post_delete
 
 
 
@@ -37,25 +40,35 @@ class UserAddress(models.Model):
 
 #  ORDERSTATUS = ((1, "Pending"), (2, "Dispatch"), (3, "On the way"), (4, "Delivered"), (5, "Cancelled"), (6, "Returned"))
 class Order(models.Model):
-   id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
-   user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
-   address = models.ForeignKey(UserAddress, on_delete=models.CASCADE, related_name='orders')
-   payment_mode=models.CharField(max_length=250,null=False )
-   status = models.CharField(max_length=100,null=True)
-   created_at = models.DateTimeField(auto_now=True)
-   expected_delivery = models.DateTimeField(blank=True, null=True)
+    id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
+    address = models.ForeignKey(UserAddress, on_delete=models.CASCADE, related_name='orders')
+    payment_mode=models.CharField(max_length=250,null=False )
+    created_at = models.DateTimeField(auto_now=True)
+    expected_delivery = models.DateTimeField(blank=True, null=True)
+    total_selling_price = models.IntegerField(default=0)
+    total_actual_price = models.IntegerField(default=0) 
 
-   def save(self, *args, **kwargs):
+    total_discount_price = models.IntegerField(default=0)
+    coupon_discount = models.IntegerField(default=0) 
+    final_price = models.IntegerField(default=0)
+
+
+    def save(self, *args, **kwargs):
         if self.created_at and not self.expected_delivery:
             self.expected_delivery = self.created_at + timedelta(days=3)
         super().save(*args, **kwargs)
-   
+    
 class OrderItem(models.Model):
     id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
     order=models.ForeignKey(Order,on_delete=models.CASCADE,related_name='orderitems')
     Product_variant=models.ForeignKey(Variant,on_delete=models.CASCADE,related_name='orderitems')
     count=models.PositiveSmallIntegerField(default=1)
-    total_price = models.IntegerField(default=0)
+    total_actual_price = models.IntegerField(default=0)
+    status = models.CharField(max_length=100,null=True,default='on the way')
+    total_price=models.IntegerField(default=0)
+
+
 
 class Review(models.Model):
    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reviews')

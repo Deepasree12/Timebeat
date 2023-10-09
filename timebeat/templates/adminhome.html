@@ -19,14 +19,39 @@
         rel="stylesheet">
     
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.css" integrity="sha256-aa0xaJgmK/X74WM224KMQeNQC2xYKwlAt08oZqjeF0E=" crossorigin="anonymous" />
     
-  
     
 
     <!-- Custom styles for this template-->
     <link href="{% static '/css/sb-admin-2.min.css'%}" rel="stylesheet">
+   
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<style>
+    body {
+        display: flex;
+    }
     
-
+    .rectangle {
+        width: 100px;
+        height: 50px;
+        margin: 10px;
+    }
+    
+    .blue {
+        background-color: #AEEEEE; /* Pastel Blue */
+    }
+    
+    .green {
+        background-color: #98FB98; /* Pastel Green */
+    }
+    
+    .yellow {
+        background-color: #FFFF99; /* Pastel Yellow */
+    }
+    
+</style>    
 </head>
 
 <body id="page-top">
@@ -267,8 +292,64 @@
                 <!-- End of Topbar -->
 
                 <!-- Begin Page Content -->
-                <div class="container-fluid">
+                {% block index %} 
+               
+                    
+                <div class="rectangle blue"></div>
+                <div class="rectangle green"></div>
+                 <div class="rectangle yellow"></div>
 
+               
+                <canvas id="myChart" width="400" height="100"></canvas>  
+                {% endblock index %} 
+
+
+
+
+
+
+{%block scripts%}
+                
+
+<script>
+$(document).ready(function () {
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ['Label 1', 'Label 2', 'Label 3', 'Label 4'],
+            datasets: [{
+                label: '# of Users',
+                data: [30, 20, 15, 35], // Example values for each label
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+});
+</script>
+
+{%endblock scripts%}
+                    
+                   
                     <!-- Page Heading -->
                     
 
@@ -276,9 +357,9 @@
                         <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
                         </div>   {% endcomment %}
 
-            {% block index %} 
+            
                  
-            {% endblock index %} 
+            
 
 
             {% comment %} <!-- Footer -->

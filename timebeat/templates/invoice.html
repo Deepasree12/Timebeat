@@ -1,0 +1,199 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Checkout</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->	
+	<link rel="icon" type="image/png" href="{% static '/images/icons/favicon.png' %}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static '/vendor/bootstrap/css/bootstrap.min.css' %}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static '/fonts/font-awesome-4.7.0/css/font-awesome.min.css' %}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static '/fonts/iconic/css/material-design-iconic-font.min.css' %}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static '/fonts/linearicons-v1.0.0/icon-font.min.css' %}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static '/vendor/animate/animate.css' %}">
+<!--===============================================================================================-->	
+	<link rel="stylesheet" type="text/css" href="{% static '/vendor/css-hamburgers/hamburgers.min.css' %}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static '/vendor/animsition/css/animsition.min.css' %}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static '/vendor/select2/select2.min.css' %}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static '/vendor/perfect-scrollbar/perfect-scrollbar.css' %}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static '/css/util.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static '/css/main.css' %}">
+<!--===============================================================================================-->
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.0/html2pdf.bundle.min.js"></script>
+</head>
+<style>
+	
+
+
+        /* Reset some default styles */
+        body, h1, h2, p, ul, li {
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Page styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        /* Invoice container */
+        .invoice {
+            
+        }
+
+        /* Invoice header */
+        .invoice-header {
+           
+        }
+
+        /* Invoice title */
+        .invoice-title {
+            font-size: 24px;
+            margin-bottom: 10px;
+            text-align: right;
+        }
+
+        /* Invoice details */
+        .invoice-details {
+            font-size: 16px;
+            text-align: right;
+        }
+        .address
+        {
+            font-size: 24px;
+            text-align: left;
+        }
+        /* Invoice items */
+        .invoice-items {
+            margin-top: 20px;
+        }
+
+        /* Table styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        /* Invoice totals */
+        .invoice-totals {
+            margin-top: 20px;
+            text-align: right;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+   
+        
+            <h1 style=" text-align: center;font-size: 30px;">TimeBeat</h1>
+            <p style=" text-align: center;">The complete watch store</p>
+
+            <h1 style=" text-align: right;font-size: 18px;">Invoice #: 1234{{forloop.counter}}</h1>
+            <p style=" text-align: right;">ORDER ID:{{order.id}}</p>
+        
+            <h2 style=" text-align: left;font-size: 20px;">Billing Address:</h2>
+            <p style=" font-size: 13px;">{{ order.address.address }}</p>
+            <p style=" font-size: 13px;"> {{ order.address.landmark }}</p>
+            <p style=" font-size: 13px;">{{order.address.pincode }}</p>
+       
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product name</th>
+                        <th>Quantity</th>
+                        <th>Unit Price</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for orderitem in  orderitems %}
+                    <tr>
+                        <td>{{ orderitem.Product_variant.product.name }}</td>
+                        <td>{{orderitem.count}}</td>
+                        <td>{{orderitem.Product_variant.selling_price}}</td>
+                        
+                        <td>{{orderitem.total_price}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="invoice-totals">
+            <p style=" font-size: 15px;">Subtotal: {{order.total_selling_price }}</p>
+            <p style=" font-size: 15px;">Coupon_discount: {{order.coupon_discount }}</p>
+            <p style=" font-size: 15px;">Delivery:Free</p>
+            <h2 style=" font-size: 15px;">Total: {{order.final_price }}</h2>
+        </div>
+				
+        
+    </div>
+</body>
+</html>
+
+  
+		
+
+	
+		
+	<!-- Footer -->
+	
+	
+	
+	
+
+
+<!--===============================================================================================-->	
+	<script src="{% static '/vendor/jquery/jquery-3.2.1.min.js' %}" ></script>
+<!--===============================================================================================-->
+	<script src="{% static '/vendor/animsition/js/animsition.min.js' %}"></script>
+<!--===============================================================================================-->
+	
+<!--===============================================================================================-->
+
+
+		
+		
+		
+		
+		
+		
+<!--===============================================================================================-->
+	<script src="{% static '/js/main.js' %}"></script>
+	
+</body>
+</html>
+
+
+  
+
+

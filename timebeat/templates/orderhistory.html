@@ -102,6 +102,21 @@
     .quantity-controls a {
         margin: 0 5px; /* Adjust the margin as needed for spacing */
     }
+/* Header CSS */
+.header-v4 {
+	position: fixed;
+	width: 100%;
+	z-index: 1000; /* Lower z-index for the header */
+	background: #fff;
+}
+
+/* Modal CSS */
+.modal {
+	position: fixed;
+	width: 100%;
+	z-index: 2000; /* Higher z-index for the modal */
+	/* Other modal styles */
+}
 
 
 
@@ -287,9 +302,9 @@
 				</li>
 			</ul>
 		</div>
-
+	</header>
 		<!-- Modal Search -->
-		<div class="modal-search-header flex-c-m trans-04 js-hide-modal-search">
+		{% comment %} <div class="modal-search-header flex-c-m trans-04 js-hide-modal-search">
 			<div class="container-search-header">
 				<button class="flex-c-m btn-hide-modal-search trans-04 js-hide-modal-search">
 					<img src="{% static '/images/icons/icon-close2.png' %}" alt="CLOSE">
@@ -302,8 +317,8 @@
 					<input class="plh3" type="text" name="search" placeholder="Search...">
 				</form>
 			</div>
-		</div>
-	</header>
+		</div> {% endcomment %}
+	
 
 
 
@@ -323,10 +338,7 @@
 		
 
 	<!-- Shoping Cart -->
-
-
-  <form action="." method="post">
-		{% csrf_token %}
+	<div class="container-fluid">
 		<div class="row">
 			<div class="col-8 p-2">
 				{% if user.is_authenticated %}
@@ -338,41 +350,46 @@
 					{% for orderitem in user_order_items %}
 					
 						<div class="border shadow mb-2 p-3">
-							<p class="text-success" style="text-align:right; text-bold">On the way</p>
+							<p class="text-success" style="text-align:right; text-bold">{{orderitem.status}}</p>
 							<div class="text-primary " data-toggle="modal" data-target="#exampleModalCenter" style="text-align: right;cursor: pointer;">
 								<i class="bi bi-star-fill ps-1">Rate and Review</i>
 							</div><br>
-							{% comment %} <button class="btn btn-primary my-auto float-right"  type="button">View Detail</button> {% endcomment %}
+							
+							
  
-							<button class="btn btn-primary my-auto float-right" data-bs-toggle="modal" data-bs-target="#orderViewModal{{forloop.counter}}" type="button">View Detail</button>
-							<div class="modal fade" id="orderViewModal{{forloop.counter}}" tabindex="-1" data-bs-backdrop="static" aria-hidden="true">
+						<button class="btn btn-primary my-auto float-right" data-bs-toggle="modal" data-bs-target="#orderViewModal{{forloop.counter}}" type="button">View Detail</button>
+						<a class="btn btn-primary my-auto float-right" href="{% url 'invoice' pk=user_orders.id  %} ">Download Invoice</a>
+							
+						<div class="modal fade" id="orderViewModal{{forloop.counter}}" tabindex="-1" data-bs-backdrop="static" aria-hidden="true" style="z-index: 2000;">
 								<div class="modal-dialog modal-lg modal-dialog-centered">
 										<div class="modal-content">
 											<div class="modal-header text-center">
 												<span class="badge bg-secondary text-center" style="font-size: 30px;">TIMEBEAT</span>&nbsp;&nbsp;
 												<br>
-												<div style="margin-right: 10px;">ORDER ID:{{ orderitem.Product_variant.product.id }}</div>
+												<div style="margin-right: 10px; "><b>ORDER ID : {{ orderitem.id }}</b></div>
 												<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 										</div>
 												<div class="modal-body p-2 border shadow mb-2 p-3">
 														
-														<div class="form-check border mb-2">
+														<div class="form-check border shadow mb-2">
 																<div class="p-2">
 																		
 																		<label class="form-check-label">
 																			<div style="display: flex; justify-content: space-between;">
-																				<strong>Product Name:{{ orderitem.Product_variant.product.name }}</strong><br>
+																				<p><b>Product Name :</b> {{ orderitem.Product_variant.product.name }}</p>
+																			</div>
+																			<p><b>Description :</b> {{ orderitem.Product_variant.product.description }}</p>
+																				<p><b>Product Price :</b> ₹ {{ orderitem.Product_variant.selling_price }}</p>
 																			
 																			
 																			
-																			<hr>
-																			<span class="ml-2">Product Price₹{{ orderitem.Product_variant.selling_price }}</span>
-																		</div>
-																			<span >Delivery Address:</strong> {{ orderitem.order.address.address }},{{ orderitem.order.address.landmark }},{{ orderitem.order.address.pincode }},</span><br>
+																			
+																		
+																			<span ><b>Delivery Address :</b> </strong> {{ orderitem.order.address.address }},{{ orderitem.order.address.landmark }},{{ orderitem.order.address.pincode }}</span><br>
 
 																		
 																		<hr>	
-																		<div>ORDERD ON:{{user_orders.created_at}}</div><div>Expected Delivery On:{{user_orders.created_at}}</div>
+																		<div><b>ORDERD ON : </b>{{user_orders.created_at}} <b> &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;Expected Delivery On :</b> {{user_orders.created_at}}</div>
 
 																				<hr>
 																			
@@ -390,15 +407,15 @@
 												</div>
 										</div>
 								</div>
-						</div>
+						</div> 
 						 
-					
+
 						
 						<br>
 						<div class="d-flex align-items-center">
 							<img src="{{ orderitem.Product_variant.mainimage.url }}" class="img-fluid bg-secondary-subtle border rounded-3" alt="product" style="width: 10%; margin-right: 10px;">
 							<div>
-								ORDER ID: <span class="ml-2">{{ orderitem.Product_variant.product.id }}</span><br>
+								ORDER ITEM ID: <span class="ml-2">{{ orderitem.id }}</span><br>
 								<strong>{{ orderitem.Product_variant.product.name }}</strong><br>
 								
 								
@@ -452,10 +469,10 @@
 				</div>
 			</div>
 		</div>
+	</div>
+		
+		
 	
-		
-		
-	</form>
 	
   
 

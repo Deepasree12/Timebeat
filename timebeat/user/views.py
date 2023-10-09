@@ -22,6 +22,9 @@ from datetime import datetime, timedelta
 import razorpay
 from timebeat.settings import RAZOR_KEY_ID,RAZOR_KEY_SECRET
 from django.http import JsonResponse
+from django.template.loader import get_template
+from xhtml2pdf import pisa
+from django.http import HttpResponse
 
 
 class index(View):
@@ -249,6 +252,18 @@ class UserAddAddress(View):
     
 class Checkout(View):
     def get(self, request):
+        cart=request.user.cart
+        cart.coupon_discount_price = request.session.get('coupon_discount',0)
+        if cart.total_selling_price > cart.coupon_discount_price:
+            cart.final_price = cart.total_selling_price-cart.coupon_discount_price
+        else:
+            cart.coupon_discount_price=0
+            cart.final_price=cart.total_selling_price
+        cart.save()
+        try:
+            del request.session['coupon_discount']
+        except KeyError:
+            pass
         coupon=Coupon.objects.all()
         user_data = UserAddress.objects.filter(user=request.user)
         user_cart = request.user.cart
@@ -271,10 +286,14 @@ class Checkout(View):
     def post(self, request):
         address_id = request.POST.get('address')
         payment_method = request.POST.get('payment_method')
-        print(payment_method)
+        cart=request.user.cart
+        # print(payment_method)
         address = UserAddress.objects.get(id=address_id)
-        order = Order.objects.create(user=request.user, address=address, payment_mode=payment_method)
+        order = Order.objects.create(user=request.user, address=address, payment_mode=payment_method,total_discount_price=cart.total_discount_price,
+                                     coupon_discount=cart.coupon_discount_price,total_selling_price=cart.total_selling_price,final_price=cart.final_price)
 
+        
+        
         for item in request.user.cart.cartitems.all():
             product_variant = item.product_variant
             total_price = item.total_price
@@ -282,44 +301,44 @@ class Checkout(View):
 
             OrderItem.objects.create(order=order, Product_variant=product_variant,total_price = total_price,count=count)
 
-        if payment_method == 'cod':
-            # messages.success(request, 'Order placed successfully! You have selected Cash on Delivery.')
-            order.save()
-            return redirect('home')  
+        # if payment_method == 'cod':
+        #     # messages.success(request, 'Order placed successfully! You have selected Cash on Delivery.')
+        #     order.save()
+        #     return redirect('home')  
 
-        elif payment_method == 'online':
+        # elif payment_method == 'online':
                 
-            client = razorpay.Client(auth=(RAZOR_KEY_ID,RAZOR_KEY_SECRET))
-            data = { "amount":request.user.Cart.total_selling_price, "currency": "INR","receipt": str(order.id), }
-            payment = client.order.create(data=data)
-            order_id = payment["id"] 
-            order.razorpay_order_id = order_id
-            order.status = 'success'
-            order.save()
+        #     client = razorpay.Client(auth=(RAZOR_KEY_ID,RAZOR_KEY_SECRET))
+        #     data = { "amount":request.user.Cart.total_selling_price, "currency": "INR","receipt": str(order.id), }
+        #     payment = client.order.create(data=data)
+        #     order_id = payment["id"] 
+        #     order.razorpay_order_id = order_id
+        #     order.status = 'success'
+        #     order.save()
             return redirect('home')
         
         
 class ApplyCoupon(View):
     def get(self, request,coupon_code):
         
-        coupon = Coupon.objects.get(coupon_code=coupon_code)
-        cart = Cart.objects.get(user=request.user)
+        coupon = Coupon.objects.filter(coupon_code=coupon_code).first()
+        cart = request.user.cart
+        # print( coupon.discount_price,cart.total_selling_price)
         if cart.total_selling_price > coupon.minimum_amount:
-            cart.coupon_discount_price = coupon.discount_price
-        else:
-            cart.coupon_discount_price=0
-        cart.save()
+            request.session['coupon_discount'] = coupon.discount_price
+        messages.success(request, "Coupon is applied")
         return redirect(request.META.get('HTTP_REFERER'))
-
 
 class OrderHistory(View):
     def get(self, request):
         user_orders = Order.objects.filter(user=request.user)
-        user_order_items = OrderItem.objects.filter(order__in=user_orders)
-        return render(request, 'orderhistory.html', {'user_orders':user_orders,'user_order_items':user_order_items})
+        all_order_items = []
+        for order in user_orders:
+            order_items = order.orderitems.all()
+            all_order_items.extend(order_items) 
+        return render(request, 'orderhistory.html', {'user_orders':user_orders,'user_order_items':all_order_items})
 
     def post(self,request,pk):
-
         comment = request.POST.get('review')
         rating=request.POST.get('rating')
         variant = get_object_or_404(Variant, pk=pk) 
@@ -329,14 +348,8 @@ class OrderHistory(View):
                                                          defaults={'comment':comment, 'rate':rating})
         return redirect(request.META.get('HTTP_REFERER'))
 
-def change_order_status(request,id):
-    order = get_object_or_404(Order, id=id)
-    new_status = request.GET.get('status')
-    if new_status is not None:
-        
-        order.status = int(new_status)
-        order.save()
-    return redirect('orderhistory')
+
+
         
 class OrderDetails(View):
     def get(self,request):
@@ -344,6 +357,29 @@ class OrderDetails(View):
         user_orders = Order.objects.filter(user=request.user)
         user_order_items = OrderItem.objects.filter(order__in=user_orders)
         return render(request, 'orderdetail.html', {'user_orders':user_orders,'user_order_items':user_order_items})
+
+class Invoice(View):
+    def get(self,request,pk):
+       
+        order = get_object_or_404(Order, id=pk)
+        orderitems=order.orderitems.all()
+        template_path = 'invoice.html'
+        context = {
+          'order':order,
+          'orderitems':orderitems,
+
+        }
+        template = get_template(template_path)
+        html = template.render(context)
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="invoice.pdf"'
+
+        # Create PDF
+        pisa_status = pisa.CreatePDF(html, dest=response)
+        if pisa_status.err:
+            return HttpResponse('We had some errors <pre>' + html + '</pre>')
+        return response
+
 
 class reset(View):
     def get(self,request):

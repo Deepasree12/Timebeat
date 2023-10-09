@@ -325,7 +325,7 @@
 
 	<!-- Shoping Cart -->
 
-<form action="." method="post">
+<form action="." method="post" id="payment">
   <div class="row">
     {% csrf_token %}
     <div class="col-8 p-2">
@@ -492,7 +492,7 @@
         </div>
         <div class="row">
           <div class="col h6 text-secondary">Discount</div>
-          <div class="col text-success h6">-₹{{ cart.total_discount_price }}</div>
+          <div class="col text-success h6">₹{{ cart.total_discount_price }}</div>
         </div>
 				<div class="row">
           <div class="col h6">Selling Amount</div>
@@ -807,6 +807,7 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
+	payment_form = document.getElementById('payment')
 var options = {
     "key": "{{payment_API_key}}", 
     //"amount": "{{ sub }}00", 
@@ -819,6 +820,7 @@ var options = {
         alert(response.razorpay_payment_id);
         alert(response.razorpay_order_id);
         alert(response.razorpay_signature)
+				payment_form.submit()
     },
     "prefill": {
         "name": "Timebeat",

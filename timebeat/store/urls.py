@@ -19,5 +19,8 @@ urlpatterns=[
     path('coupon/',views.CouponManagemnet.as_view(),name='coupon'),
     path('color/',views.Color_view.as_view(),name='color'),
     path('product/<str:pk>/',views.Varient_view.as_view(),name='productvarient'),
-
+    path('deliverorder/<uuid:pk>/',views.DeliverOrder.as_view(),name='deliverorder'),
+    path('cancelorder/<uuid:pk>/',views.CancelOrder.as_view(),name='cancelorder'),
+    path('admin_orderitem_management/<uuid:pk>/',views.AdminOrderItem.as_view(),name='adminorderitem')
 ]
+

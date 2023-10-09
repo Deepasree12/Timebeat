@@ -161,30 +161,7 @@ class Varient_view(View):
 
         return redirect('productvarient',pk=pk)
 
-class Order_view(View):
 
-    def get(self, request):
-        orders = Order.objects.all()
-        return render(request, 'adminorder.html', {'orders': orders})
-
-    def post(self, request):
-        order_id = int(request.POST.get('order_id'))
-        status = request.POST.get('status')
-        
-        # status_number = None  # Initialize the status_number variable
-        
-        # for number, choice_text in ORDERSTATUS:
-        #     if status == choice_text:
-        #         status_number = number
-        #         break
-        
-        # if status_number is not None:
-        #     order = Order.objects.get(id=order_id)
-        #     order.status = status_number
-        #     order.save()
-
-        
-        return redirect('order') 
 
 class CouponManagemnet(View):
     def get(self,request):
@@ -202,3 +179,36 @@ class CouponManagemnet(View):
         enddate=request.POST.get('enddate')
         Coupon.objects.create(coupon_code=coupon_code, details=details, count=count,discount_price=discount_price,minimum_amount=minimum,start_date=startdate,end_date=enddate)
         return redirect('coupon')
+
+
+class Order_view(View):
+
+    def get(self, request):
+        orders = Order.objects.all()
+        return render(request, 'adminorder.html', {'orders': orders})
+
+    def post(self, request):
+        order_id = int(request.POST.get('order_id'))
+        status = request.POST.get('status')
+        return redirect('order') 
+
+class AdminOrderItem(View):
+    def get(self,request,pk):
+        order = get_object_or_404(Order, id=pk)
+        orderitems=order.orderitems.all()
+        return render(request, 'admin_order_item.html', {'orderitems': orderitems})
+
+class DeliverOrder(View):
+    def get(self,request,pk):
+        orderitem=OrderItem.objects.get(id=pk)
+        orderitem.status = 'Delivered'
+        orderitem.save()
+        return redirect(request.META.get('HTTP_REFERER'))
+class CancelOrder(View):
+    def get(self,request,pk):
+        orderitem=OrderItem.objects.get(id=pk)
+        orderitem.status='Cancelled'
+        orderitem.save()
+        return redirect(request.META.get('HTTP_REFERER'))
+        
+        

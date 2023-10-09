@@ -314,7 +314,7 @@
 													<a class="text-decoration-none text-body-tertiary" href="{% url 'increment_cart' item.product_variant.id %}" ><i class="bi bi-plus-circle-fill h5"></i></a>
 												</div>
 										</td>
-										<td class="column-5">{{ item.total_price }}</td>
+										<td class="column-5">{{ item.total_actual_price }}</td>
 										<td><a href="{% url 'delete_cart' item.product_variant.id %}">Remove</a></td>
 										
 										{% comment %} <form method="post" action="{% url 'delete_cart' item.product_variant.id %}">
