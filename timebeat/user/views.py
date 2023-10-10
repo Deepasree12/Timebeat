@@ -97,8 +97,12 @@ class signin(View):
         email = request.POST['email']
         password = request.POST['password']
         user = authenticate(request, email=email, password=password)
-        if user is not None:
-            login(request, user)
+        
+        if user is not None :
+            if user.is_active == True :
+                login(request, user)
+            else:
+                messages.warning(request, 'user is bannned')
             return redirect('home')
         else:
             messages.warning(request, 'Invalid email or password')
@@ -338,15 +342,15 @@ class OrderHistory(View):
             all_order_items.extend(order_items) 
         return render(request, 'orderhistory.html', {'user_orders':user_orders,'user_order_items':all_order_items})
 
-    def post(self,request,pk):
-        comment = request.POST.get('review')
-        rating=request.POST.get('rating')
-        variant = get_object_or_404(Variant, pk=pk) 
-        product = variant.product 
+    # def post(self,request,pk):
+    #     comment = request.POST.get('review')
+    #     rating=request.POST.get('rating')
+    #     variant = get_object_or_404(Variant, pk=pk) 
+    #     product = variant.product 
         
-        review,created = Review.objects.update_or_create(user=request.user,product=product,
-                                                         defaults={'comment':comment, 'rate':rating})
-        return redirect(request.META.get('HTTP_REFERER'))
+    #     review,created = Review.objects.update_or_create(user=request.user,product=product,
+    #                                                      defaults={'comment':comment, 'rate':rating})
+    #     return redirect(request.META.get('HTTP_REFERER'))
 
 
 

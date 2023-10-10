@@ -1,0 +1,46 @@
+{% extends 'adminhome.html' %}
+
+{% block index %}
+
+
+<table class="table table-striped table-bordered table-sm" cellspacing="0" width="100%" id="dataTable">
+  <thead>
+    <tr>
+      <th class="th-sm">user ID</th>
+      <th class="th-sm"> Name</th>
+      <th class="th-sm">email</th>
+      <th class="th-sm"> last login</th>
+      <th class="th-sm">Action</th>
+      {% comment %} <th class="th-sm">expected Delivery</th>  {% endcomment %}
+      {% comment %} <th class="th-sm">Status</th>
+      <th class="th-sm">Mark as Delivered</th> {% endcomment %}
+      
+      
+    </tr>
+  </thead>
+  <tbody>
+    {% for user in users %}
+<tr>
+  <td>{{ user.id }}</td>
+  <td>{{ user.name }}</td>
+ 
+  <td>{{ user.email}}</td>
+  <td>{{ user.last_login }}</td>
+  <td>
+  {% if user.is_active == True %}
+  <a class="btn btn-primary" href="{% url "useraccess" pk=user.id %}">Block</a>
+  {% else %}
+  <a class="btn btn-primary" href="{% url "useraccess"  pk=user.id %}">Unblock</a>
+  {% endif %}
+  </td>
+  
+</tr>
+{% endfor %}
+
+  </tbody>
+</table>
+
+
+
+
+{% endblock index %}

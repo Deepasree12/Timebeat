@@ -6,7 +6,7 @@ from . import views
 urlpatterns=[
     path('',views.adminhome,name='adminhome'),
     path('adminsignup/',views.adminsignup,name='adminsignup'),
-    path('userview/',views.user_view.as_view(),name='userlist'),
+    path('userview/',views.admin_user_managemnt.as_view(),name='userlist'),
     
     path('productview/',views.product_view.as_view(),name='productview'),
     
@@ -21,6 +21,7 @@ urlpatterns=[
     path('product/<str:pk>/',views.Varient_view.as_view(),name='productvarient'),
     path('deliverorder/<uuid:pk>/',views.DeliverOrder.as_view(),name='deliverorder'),
     path('cancelorder/<uuid:pk>/',views.CancelOrder.as_view(),name='cancelorder'),
-    path('admin_orderitem_management/<uuid:pk>/',views.AdminOrderItem.as_view(),name='adminorderitem')
+    path('admin_orderitem_management/<uuid:pk>/',views.AdminOrderItem.as_view(),name='adminorderitem'),
+    path('User_access/<uuid:pk>/',views.UserAccess.as_view(),name='useraccess'),
 ]
 

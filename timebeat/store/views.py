@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect,get_object_or_404
 from .models import * 
 from user.models import * 
 from django.http import JsonResponse
-
+from django.db.models import Sum
 from datetime import date
 
 from django.views import View
@@ -10,19 +10,39 @@ from django.views import View
 
 
 def adminhome(request):
-    return render(request,'adminhome.html')
+    cancelled = OrderItem.objects.filter(status='Cancelled')
+    delivered = OrderItem.objects.filter(status='Delivered')
+    pending = OrderItem.objects.filter(status='on the way')
+    order=Order.objects.all()
+    customers=User.objects.filter(is_superuser=False)
+    products=Product.objects.all()
+    total_revenue = Order.objects.aggregate(total_revenue=Sum('final_price'))['total_revenue']
 
-
-class user_view(View):
+    return render(request, 'adminhome.html', {
+        'pending': pending,
+        'cancelled': cancelled,
+        'delivered': delivered,
+        'order':order,
+        'customers':customers,
+        'products':products,
+        'total_revenue':total_revenue
+    })
+class admin_user_managemnt(View):
     def get(self,request):
-        data=User.objects.all()
-        return render(request, 'userlist.html', {'data': data})
+        users=User.objects.filter(is_superuser=False)
+        return render(request, 'adminusers.html', {'users': users}
+                      )
+class UserAccess(View):
+    def get(self,request,pk):
+        user=User.objects.get(id=pk)
+        if user.is_active == True:
+            user.is_active=False
+        else:
+            user.is_active=True
+        user.save()
+        return redirect(request.META.get('HTTP_REFERER'))
 
     
-
-
-
-
 def adminsignup(request):
     return render(request,'adminsignup.html')
 

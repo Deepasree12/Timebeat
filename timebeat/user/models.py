@@ -38,7 +38,6 @@ class UserAddress(models.Model):
   landmark = models.CharField(max_length=200)
   pincode = models.CharField(max_length=6)
 
-#  ORDERSTATUS = ((1, "Pending"), (2, "Dispatch"), (3, "On the way"), (4, "Delivered"), (5, "Cancelled"), (6, "Returned"))
 class Order(models.Model):
     id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
@@ -53,11 +52,16 @@ class Order(models.Model):
     coupon_discount = models.IntegerField(default=0) 
     final_price = models.IntegerField(default=0)
 
-
+    # @property
+    # def total_final_price(self):
+    #     return self.aggregate(total_final_price=Sum('final_price'))['total_final_price'] or 0
     def save(self, *args, **kwargs):
         if self.created_at and not self.expected_delivery:
             self.expected_delivery = self.created_at + timedelta(days=3)
         super().save(*args, **kwargs)
+    
+
+    
     
 class OrderItem(models.Model):
     id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
