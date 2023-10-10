@@ -37,7 +37,7 @@ class UserAccess(View):
         user=User.objects.get(id=pk)
         if user.is_active == True:
             user.is_active=False
-        else:
+        else:                                                                       
             user.is_active=True
         user.save()
         return redirect(request.META.get('HTTP_REFERER'))

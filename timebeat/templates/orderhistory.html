@@ -347,7 +347,7 @@
 						<span class="badge bg-secondary"></span> ORDER HISTORY
 					</div>
 					{%  for user_orders  in user_orders %}
-					{% for orderitem in user_order_items %}
+					{% for orderitem in all_order_items %}
 					
 						<div class="border shadow mb-2 p-3">
 							<p class="text-success" style="text-align:right; text-bold">{{orderitem.status}}</p>

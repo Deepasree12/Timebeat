@@ -8,6 +8,7 @@ from datetime import date
 from django.dispatch import receiver
 from django.db.models import Sum
 from django.db.models.signals import post_save, post_delete
+from django.utils import timezone
 
 
 
@@ -44,7 +45,7 @@ class Order(models.Model):
     address = models.ForeignKey(UserAddress, on_delete=models.CASCADE, related_name='orders')
     payment_mode=models.CharField(max_length=250,null=False )
     created_at = models.DateTimeField(auto_now=True)
-    expected_delivery = models.DateTimeField(blank=True, null=True)
+    expected_delivery = models.DateTimeField(blank=True, null=True,default=timezone.now() + timedelta(days=3))
     total_selling_price = models.IntegerField(default=0)
     total_actual_price = models.IntegerField(default=0) 
 
@@ -65,7 +66,7 @@ class Order(models.Model):
     
 class OrderItem(models.Model):
     id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
-    order=models.ForeignKey(Order,on_delete=models.CASCADE,related_name='orderitems')
+    order=models.ForeignKey(Order,on_delete=models.CASCADE,related_name='orderitem')
     Product_variant=models.ForeignKey(Variant,on_delete=models.CASCADE,related_name='orderitems')
     count=models.PositiveSmallIntegerField(default=1)
     total_actual_price = models.IntegerField(default=0)

@@ -47,6 +47,8 @@
 	text-decoration: none;
 }
 
+
+	
 </style>
 </head>
 <body class="animsition">
@@ -256,90 +258,7 @@
 		</div>
 	</header>
 
-	{% comment %} <!-- Cart -->
-	<div class="wrap-header-cart js-panel-cart">
-		<div class="s-full js-hide-cart"></div>
 
-		<div class="header-cart flex-col-l p-l-65 p-r-25">
-			<div class="header-cart-title flex-w flex-sb-m p-b-8">
-				<span class="mtext-103 cl2">
-					Your Cart
-				</span>
-
-				<div class="fs-35 lh-10 cl2 p-lr-5 pointer hov-cl1 trans-04 js-hide-cart">
-					<i class="zmdi zmdi-close"></i>
-				</div>
-			</div>
-			
-			<div class="header-cart-content flex-w js-pscroll">
-				<ul class="header-cart-wrapitem w-full">
-					<li class="header-cart-item flex-w flex-t m-b-12">
-						<div class="header-cart-item-img">
-							<img src="{% static '/images/item-cart-01.jpg' %}" alt="IMG">
-						</div>
-
-						<div class="header-cart-item-txt p-t-8">
-							<a href="#" class="header-cart-item-name m-b-18 hov-cl1 trans-04">
-								White Shirt Pleat
-							</a>
-
-							<span class="header-cart-item-info">
-								1 x $19.00
-							</span>
-						</div>
-					</li>
-
-					<li class="header-cart-item flex-w flex-t m-b-12">
-						<div class="header-cart-item-img">
-							<img src="{% static '/images/item-cart-02.jpg' %}" alt="IMG">
-						</div>
-
-						<div class="header-cart-item-txt p-t-8">
-							<a href="#" class="header-cart-item-name m-b-18 hov-cl1 trans-04">
-								Converse All Star
-							</a>
-
-							<span class="header-cart-item-info">
-								1 x $39.00
-							</span>
-						</div>
-					</li>
-
-					<li class="header-cart-item flex-w flex-t m-b-12">
-						<div class="header-cart-item-img">
-							<img src="{% static '/images/item-cart-03.jpg' %}" alt="IMG">
-						</div>
-
-						<div class="header-cart-item-txt p-t-8">
-							<a href="#" class="header-cart-item-name m-b-18 hov-cl1 trans-04">
-								Nixon Porter Leather
-							</a>
-
-							<span class="header-cart-item-info">
-								1 x $17.00
-							</span>
-						</div>
-					</li>
-				</ul>
-				
-				<div class="w-full">
-					<div class="header-cart-total w-full p-tb-40">
-						Total: $75.00
-					</div>
-
-					<div class="header-cart-buttons flex-w w-full">
-						<a href="shoping-cart.html" class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-r-8 m-b-10">
-							View Cart
-						</a>
-
-						<a href="shoping-cart.html" class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-b-10">
-							Check Out
-						</a>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div> {% endcomment %}
 
 
 	<!-- breadcrumb -->
@@ -452,16 +371,7 @@
 					</div>
 					
 
-                {% comment %} <div class="d-flex gap-1">
-                    <div class="form-check form-check-inline m-0">
-                        <input class="form-check-input bg-danger p-2 border-0" type="radio" name="color" id="color1" value="red" checked>
-                    </div>
-                    <div class="form-check form-check-inline m-0">
-                        <input class="form-check-input bg-success border-0 p-2" type="radio" name="color" id="color2" value="blue">
-                    </div>
-                    <div class="form-check form-check-inline m-0">
-                        <input class="form-check-input bg-info border-0 p-2" type="radio" name="color" id="color3" value="green">
-                    </div> {% endcomment %}
+              
                 </div>
 								<br>
 									<div class="d-flex gap-2 col-5 py-3">
@@ -597,8 +507,10 @@
 														Rate and Review
 													</button>
 													{% else %}
-													<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter" style="cursor: not-allowed;">
-														Rate and Review
+													<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter"  data-bs-toggle="tooltip" data-bs-placement="left" title="Havnt purchase ? please place order" style="cursor: not-allowed;">
+														
+													Rate and Review
+													
 													</button>
 													
 													{% endif %}

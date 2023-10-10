@@ -212,7 +212,7 @@ class productdetail(View):
         varient.is_in_order=False
         if request.user.is_authenticated:
             for order in request.user.orders.all():
-                 for item in order.orderitems.all():
+                 for item in order.orderitem.all():
                     if varient.product == item.Product_variant.product:
                         varient.is_in_order = True
                         break
@@ -291,11 +291,12 @@ class Checkout(View):
         address_id = request.POST.get('address')
         payment_method = request.POST.get('payment_method')
         cart=request.user.cart
-        # print(payment_method)
+       
         address = UserAddress.objects.get(id=address_id)
         order = Order.objects.create(user=request.user, address=address, payment_mode=payment_method,total_discount_price=cart.total_discount_price,
-                                     coupon_discount=cart.coupon_discount_price,total_selling_price=cart.total_selling_price,final_price=cart.final_price)
-
+                                     coupon_discount=cart.coupon_discount_price,total_selling_price=cart.total_selling_price,
+                                     final_price=cart.final_price,total_actual_price=cart.total_actual_price)
+        
         
         
         for item in request.user.cart.cartitems.all():
@@ -304,21 +305,8 @@ class Checkout(View):
             count = item.count
 
             OrderItem.objects.create(order=order, Product_variant=product_variant,total_price = total_price,count=count)
-
-        # if payment_method == 'cod':
-        #     # messages.success(request, 'Order placed successfully! You have selected Cash on Delivery.')
-        #     order.save()
-        #     return redirect('home')  
-
-        # elif payment_method == 'online':
-                
-        #     client = razorpay.Client(auth=(RAZOR_KEY_ID,RAZOR_KEY_SECRET))
-        #     data = { "amount":request.user.Cart.total_selling_price, "currency": "INR","receipt": str(order.id), }
-        #     payment = client.order.create(data=data)
-        #     order_id = payment["id"] 
-        #     order.razorpay_order_id = order_id
-        #     order.status = 'success'
-        #     order.save()
+            
+            request.user.cart.cartitems.all().delete()
             return redirect('home')
         
         
@@ -327,7 +315,7 @@ class ApplyCoupon(View):
         
         coupon = Coupon.objects.filter(coupon_code=coupon_code).first()
         cart = request.user.cart
-        # print( coupon.discount_price,cart.total_selling_price)
+        
         if cart.total_selling_price > coupon.minimum_amount:
             request.session['coupon_discount'] = coupon.discount_price
         messages.success(request, "Coupon is applied")
@@ -338,20 +326,11 @@ class OrderHistory(View):
         user_orders = Order.objects.filter(user=request.user)
         all_order_items = []
         for order in user_orders:
-            order_items = order.orderitems.all()
+            order_items = order.orderitem.all()
             all_order_items.extend(order_items) 
         return render(request, 'orderhistory.html', {'user_orders':user_orders,'user_order_items':all_order_items})
 
-    # def post(self,request,pk):
-    #     comment = request.POST.get('review')
-    #     rating=request.POST.get('rating')
-    #     variant = get_object_or_404(Variant, pk=pk) 
-    #     product = variant.product 
-        
-    #     review,created = Review.objects.update_or_create(user=request.user,product=product,
-    #                                                      defaults={'comment':comment, 'rate':rating})
-    #     return redirect(request.META.get('HTTP_REFERER'))
-
+    
 
 
         
