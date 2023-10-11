@@ -66,7 +66,7 @@ class Order(models.Model):
     
 class OrderItem(models.Model):
     id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
-    order=models.ForeignKey(Order,on_delete=models.CASCADE,related_name='orderitem')
+    order=models.ForeignKey(Order,on_delete=models.CASCADE,related_name='order_items')
     Product_variant=models.ForeignKey(Variant,on_delete=models.CASCADE,related_name='orderitems')
     count=models.PositiveSmallIntegerField(default=1)
     total_actual_price = models.IntegerField(default=0)

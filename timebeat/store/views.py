@@ -215,7 +215,7 @@ class Order_view(View):
 class AdminOrderItem(View):
     def get(self,request,pk):
         order = get_object_or_404(Order, id=pk)
-        orderitems=order.orderitems.all()
+        orderitems=order.order_items.all()
         return render(request, 'admin_order_item.html', {'orderitems': orderitems})
 
 class DeliverOrder(View):

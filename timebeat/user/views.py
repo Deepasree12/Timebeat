@@ -212,7 +212,7 @@ class productdetail(View):
         varient.is_in_order=False
         if request.user.is_authenticated:
             for order in request.user.orders.all():
-                 for item in order.orderitem.all():
+                 for item in order.order_items.all():
                     if varient.product == item.Product_variant.product:
                         varient.is_in_order = True
                         break
@@ -301,13 +301,14 @@ class Checkout(View):
         
         for item in request.user.cart.cartitems.all():
             product_variant = item.product_variant
+            
             total_price = item.total_price
             count = item.count
-
-            OrderItem.objects.create(order=order, Product_variant=product_variant,total_price = total_price,count=count)
+            total_actual_price=item.total_actual_price
+            OrderItem.objects.create(order=order, Product_variant=product_variant,total_price = total_price,count=count,total_actual_price=total_actual_price)
             
-            request.user.cart.cartitems.all().delete()
-            return redirect('home')
+        request.user.cart.cartitems.all().delete()
+        return redirect('home')
         
         
 class ApplyCoupon(View):
@@ -326,26 +327,26 @@ class OrderHistory(View):
         user_orders = Order.objects.filter(user=request.user)
         all_order_items = []
         for order in user_orders:
-            order_items = order.orderitem.all()
-            all_order_items.extend(order_items) 
-        return render(request, 'orderhistory.html', {'user_orders':user_orders,'user_order_items':all_order_items})
+            all_order_items.extend(order.order_items.all())
+            
+        return render(request, 'orderhistory.html', {'user_order_items':all_order_items})
 
     
 
 
         
-class OrderDetails(View):
-    def get(self,request):
+# class OrderDetails(View):
+#     def get(self,request):
         
-        user_orders = Order.objects.filter(user=request.user)
-        user_order_items = OrderItem.objects.filter(order__in=user_orders)
-        return render(request, 'orderdetail.html', {'user_orders':user_orders,'user_order_items':user_order_items})
+#         user_orders = Order.objects.filter(user=request.user)
+#         user_order_items = OrderItem.objects.filter(order__in=user_orders)
+#         return render(request, 'orderdetail.html', {'user_orders':user_orders,'user_order_items':user_order_items})
 
 class Invoice(View):
     def get(self,request,pk):
        
         order = get_object_or_404(Order, id=pk)
-        orderitems=order.orderitems.all()
+        orderitems=order.order_items.all()
         template_path = 'invoice.html'
         context = {
           'order':order,

@@ -104,7 +104,7 @@
     }
 /* Header CSS */
 .header-v4 {
-	position: fixed;
+	
 	width: 100%;
 	z-index: 1000; /* Lower z-index for the header */
 	background: #fff;
@@ -303,21 +303,7 @@
 			</ul>
 		</div>
 	</header>
-		<!-- Modal Search -->
-		{% comment %} <div class="modal-search-header flex-c-m trans-04 js-hide-modal-search">
-			<div class="container-search-header">
-				<button class="flex-c-m btn-hide-modal-search trans-04 js-hide-modal-search">
-					<img src="{% static '/images/icons/icon-close2.png' %}" alt="CLOSE">
-				</button>
-
-				<form class="wrap-search-header flex-w p-l-15">
-					<button class="flex-c-m trans-04">
-						<i class="zmdi zmdi-search"></i>
-					</button>
-					<input class="plh3" type="text" name="search" placeholder="Search...">
-				</form>
-			</div>
-		</div> {% endcomment %}
+		
 	
 
 
@@ -346,8 +332,8 @@
 					<div class="h6 text-body-secondaryry">
 						<span class="badge bg-secondary"></span> ORDER HISTORY
 					</div>
-					{%  for user_orders  in user_orders %}
-					{% for orderitem in all_order_items %}
+					
+							{% for orderitem in user_order_items %}
 					
 						<div class="border shadow mb-2 p-3">
 							<p class="text-success" style="text-align:right; text-bold">{{orderitem.status}}</p>
@@ -357,16 +343,15 @@
 							
 							
  
-						<button class="btn btn-primary my-auto float-right" data-bs-toggle="modal" data-bs-target="#orderViewModal{{forloop.counter}}" type="button">View Detail</button>
-						<a class="btn btn-primary my-auto float-right" href="{% url 'invoice' pk=user_orders.id  %} ">Download Invoice</a>
+						<button class="btn btn-primary my-auto float-right" data-bs-toggle="modal" data-bs-target="#orderViewModal{{ orderitem.order.id }}" type="button">View Detail</button>
 							
-						<div class="modal fade" id="orderViewModal{{forloop.counter}}" tabindex="-1" data-bs-backdrop="static" aria-hidden="true" style="z-index: 2000;">
+						<div class="modal fade" id="orderViewModal{{ orderitem.order.id }}" tabindex="-1" data-bs-backdrop="static" aria-hidden="true" style="z-index: 2000;">
 								<div class="modal-dialog modal-lg modal-dialog-centered">
 										<div class="modal-content">
 											<div class="modal-header text-center">
 												<span class="badge bg-secondary text-center" style="font-size: 30px;">TIMEBEAT</span>&nbsp;&nbsp;
 												<br>
-												<div style="margin-right: 10px; "><b>ORDER ID : {{ orderitem.id }}</b></div>
+												<div style="margin-right: 10px; "><b>ORDER ITEM ID : {{ orderitem.id }}</b></div>
 												<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 										</div>
 												<div class="modal-body p-2 border shadow mb-2 p-3">
@@ -380,6 +365,7 @@
 																			</div>
 																			<p><b>Description :</b> {{ orderitem.Product_variant.product.description }}</p>
 																				<p><b>Product Price :</b> ₹ {{ orderitem.Product_variant.selling_price }}</p>
+																				<p><b>No of items orderd :</b> {{ orderitem.count }}</p>
 																			
 																			
 																			
@@ -389,8 +375,11 @@
 
 																		
 																		<hr>	
-																		<div><b>ORDERD ON : </b>{{user_orders.created_at}} <b> &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;Expected Delivery On :</b> {{user_orders.created_at}}</div>
-
+																		
+																		<div><b>ORDERD ON : </b>{{orderitem.order.created_at}} <b> &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;Expected Delivery On :</b> {{orderitem.order.expected_delivery}} </div> 
+																		
+																		
+																		
 																				<hr>
 																			
 																			
@@ -402,6 +391,7 @@
 														
 												</div>
 												<div class="modal-footer">
+													<a class="btn btn-primary my-auto float-right" href=" {% url "invoice" pk=orderitem.order.id %}">Download Invoice</a> 
 														<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 														
 												</div>
@@ -415,19 +405,19 @@
 						<div class="d-flex align-items-center">
 							<img src="{{ orderitem.Product_variant.mainimage.url }}" class="img-fluid bg-secondary-subtle border rounded-3" alt="product" style="width: 10%; margin-right: 10px;">
 							<div>
-								ORDER ITEM ID: <span class="ml-2">{{ orderitem.id }}</span><br>
+								ORDER ID: <span class="ml-2">{{ orderitem.order.id }}</span><br>
 								<strong>{{ orderitem.Product_variant.product.name }}</strong><br>
 								
 								
-								<span class="ml-2">₹{{ orderitem.Product_variant.selling_price }}</span>&nbsp;&nbsp; ₹<span class="cl3 text-decoration-line-through mr-3">{{ orderitem.Product_variant.original_price }}</span><br>
-								
+								<span class="ml-2 text-success">₹{{ orderitem.Product_variant.selling_price }}</span>&nbsp;&nbsp; ₹<span class="cl3 text-decoration-line-through mr-3">{{ orderitem.Product_variant.original_price }}</span><br>
+								<span class="text-secondary">Order on:{{orderitem.order.created_at }}</span>
             	
 								 
 							</div>
 						</div>
 					</div>
-					{% endfor %}
-					{% endfor %}
+							{% endfor %}
+				
 					<!-- Modal for Order Details -->
 		
 		</div>
