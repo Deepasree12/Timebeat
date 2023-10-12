@@ -324,12 +324,17 @@ class ApplyCoupon(View):
 
 class OrderHistory(View):
     def get(self, request):
+        
         user_orders = Order.objects.filter(user=request.user)
         all_order_items = []
         for order in user_orders:
-            all_order_items.extend(order.order_items.all())
-            
+            for item in order.order_items.all():
+                item.review = Review.objects.filter(user=request.user,product=item.Product_variant.product).first()
+                all_order_items.append(item)
         return render(request, 'orderhistory.html', {'user_order_items':all_order_items})
+
+            
+        
 
     
 
