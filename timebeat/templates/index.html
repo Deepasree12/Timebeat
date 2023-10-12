@@ -1013,7 +1013,20 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 			</div>
 		</div>
 	</div>
-
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	{% for message in messages %}
+		<script>
+		Swal.fire({
+			position: 'center',
+			icon: '{{ message.tags }}',
+			title: '{{ message }}',
+			showConfirmButton: true,
+			{% if message.tags == 'error' %}
+			confirmButtonColor: '#d33',
+			{% endif %}
+		})
+		</script>
+	{% endfor %}
 <!--===============================================================================================-->	
 	<script src="{% static '/vendor/jquery/jquery-3.2.1.min.js'%}"></script>
 <!--===============================================================================================-->

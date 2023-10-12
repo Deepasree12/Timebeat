@@ -307,7 +307,9 @@ class Checkout(View):
             total_actual_price=item.total_actual_price
             OrderItem.objects.create(order=order, Product_variant=product_variant,total_price = total_price,count=count,total_actual_price=total_actual_price)
             
+
         request.user.cart.cartitems.all().delete()
+        messages.success(request,'order placed')
         return redirect('home')
         
         
@@ -332,20 +334,24 @@ class OrderHistory(View):
                 item.review = Review.objects.filter(user=request.user,product=item.Product_variant.product).first()
                 all_order_items.append(item)
         return render(request, 'orderhistory.html', {'user_order_items':all_order_items})
-
-            
-        
-
     
-
-
+class ReviewUpdate(View):
+    def post(self, request, pk):
+    
+        comment = request.POST.get('review')
+        rating = request.POST.get('rating')
         
-# class OrderDetails(View):
-#     def get(self,request):
-        
-#         user_orders = Order.objects.filter(user=request.user)
-#         user_order_items = OrderItem.objects.filter(order__in=user_orders)
-#         return render(request, 'orderdetail.html', {'user_orders':user_orders,'user_order_items':user_order_items})
+        # variant = get_object_or_404(Variant, pk=pk)
+        # product = variant.product
+
+        # review, created = Review.objects.update_or_create(
+        #     user=request.user,
+        #     product=product,
+        #     defaults={'comment': comment, 'rate': rating}
+        # )
+        print(comment,rating)
+
+        return redirect(request.META.get('HTTP_REFERER'))
 
 class Invoice(View):
     def get(self,request,pk):

@@ -230,132 +230,149 @@
 				</li>
 			</ul>
 		</div>
-
-    <div class="container-lg">
-      <img src="{% static '/images/profile.webp' %}" alt="IMG-LOGO" style="width: 20%;">
-      <div>
-        <strong>User Name:{{current_user.name}}</strong>
-     <br>
-     <strong>email:{{current_user.email}} </strong>
-      </div >
-      
-      
-    </div>
+		<div class="container">
+			<div class="bread-crumb flex-w p-l-25 p-r-15 p-t-30 p-lr-0-lg">
+				<a href= "{% url 'profile' %}"  class="stext-109 cl8 hov-cl1 trans-04">
+					Profile
+					<i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
+				</a>
+	
+				<span class="stext-109 cl4">
+					Username:{{current_user.name}}--user email:{{current_user.email}}
+				</span>
+			</div>
+		</div>
     <div class="container">
-      <div class="d-flex justify-content-end mb-3">
-        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#exampleModalCenter">
-          Add New Address
-        </button>
-    
-        <!-- Modal -->
-        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" name="productmodel">
-          <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-            <!-- Added modal-lg class for larger width -->
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Add User Details</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div class="modal-body" style="overflow: hidden;">
-                <form action="." method="post" enctype="multipart/form-data">
-                  {% csrf_token %}
-                  <div class="mb-3">
-                    <label for="UserName" class="form-label">Name</label>
-                    <input type="text" class="form-control" id="ProductName" name="name" required>
-                  </div>
-    
-                  <div class="row">
-                    <div class="col-md-6 mb-3">
-                      <select class="form-control mb-3" name="gender">
-                        <option selected disabled>Gender</option>
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
-                      </select>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                      <label for="mobile" class="form-label">Mobile Number</label>
-                      <input type="text" class="form-control" id="ProductName" name="mobile" required>
-                    </div>
-                  </div>
-    
-                  <div class="row">
-                    <div class="col-md-6 mb-3">
-                      <select class="form-control mb-4" name="address_type">
-                        <option selected disabled>Address Type</option>
-                        <option value="office">Office</option>
-                        <option value="house">House</option>
-                      </select>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                      <label for="place" class="form-label">Place</label>
-                      <input type="text" class="form-control" id="Place" name="place" required>
-                    </div>
-                  </div>
-    
-                  <div class="mb-3">
-                    <label for="address" class="form-label">Address</label>
-                    <input type="text" class="form-control" id="subcategoryName" name="address" required>
-                  </div>
-    
-                  <div class="row">
-                    <div class="col-md-6 mb-3">
-                      <label for="landmark" class="form-label">Landmark</label>
-                      <input type="text" class="form-control" id="landmark" name="landmark" required>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                      <label for="pincodeInput" class="form-label">Pincode</label>
-                      <input type="text" class="form-control" id="pincode" name="pincode" required>
-											<button id="fetchButton">get</button>
-                    </div>
-										
-                  </div>
-									<div class="row" id="pincodeResult">
+			<div class="row">
+				<div class="col-md-2">
+					<img src="{% static '/images/profile.webp' %}" alt="IMG-LOGO" style="width: 100%;">
+					<!-- Add buttons at the bottom of the image -->
+					<div class="mt-3">
+						<a href="{% url "orderhistory" %}" class="btn btn-primary btn-block">My Orders</a>
+					</div>
+					<div class="mt-3">
+						<a href="{% url "profile" %}" class="btn btn-primary btn-block">Delivery Address</a>
+					</div>
+				</div>
+				<div class="col-md-7">
+					<!-- Order history content here -->
+					{% if user.is_authenticated %}
+					<div class="border shadow mb-2 p-3" style="width: 1000px;">
+						<div class="h6 text-body-secondary">
+							<span class="badge bg-secondary"></span> Your Address
+						</div>
+						<div class="d-flex justify-content-end mb-3">
+							<button type="button" class="btn btn-success" data-toggle="modal" data-target="#exampleModalCenter">
+								Add New Address
+							</button>
+							
+							<!-- Modal -->
+							<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" name="productmodel">
+								<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+									<!-- Added modal-lg class for larger width -->
+									<div class="modal-content">
+										<div class="modal-header">
+											<h5 class="modal-title" id="exampleModalLongTitle">Add User Details</h5>
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+												<span aria-hidden="true">&times;</span>
+											</button>
+										</div>
+										<div class="modal-body" style="overflow: hidden;">
+											<form action="." method="post" enctype="multipart/form-data">
+												{% csrf_token %}
+												<div class="mb-3">
+													<label for="UserName" class="form-label">Name</label>
+													<input type="text" class="form-control" id="ProductName" name="name" required>
+												</div>
+					
+												<div class="row">
+													<div class="col-md-6 mb-3">
+														<select class="form-control mb-3" name="gender">
+															<option selected disabled>Gender</option>
+															<option value="Male">Male</option>
+															<option value="Female">Female</option>
+														</select>
+													</div>
+													<div class="col-md-6 mb-3">
+														<label for="mobile" class="form-label">Mobile Number</label>
+														<input type="text" class="form-control" id="ProductName" name="mobile" required>
+													</div>
+												</div>
+					
+												<div class="row">
+													<div class="col-md-6 mb-3">
+														<select class="form-control mb-4" name="address_type">
+															<option selected disabled>Address Type</option>
+															<option value="office">Office</option>
+															<option value="house">House</option>
+														</select>
+													</div>
+													<div class="col-md-6 mb-3">
+														<label for="place" class="form-label">Place</label>
+														<input type="text" class="form-control" id="Place" name="place" required>
+													</div>
+												</div>
+					
+												<div class="mb-3">
+													<label for="address" class="form-label">Address</label>
+													<input type="text" class="form-control" id="subcategoryName" name="address" required>
+												</div>
+					
+												<div class="row">
+													<div class="col-md-6 mb-3">
+														<label for="landmark" class="form-label">Landmark</label>
+														<input type="text" class="form-control" id="landmark" name="landmark" required>
+													</div>
+													<div class="col-md-6 mb-3">
+														<label for="pincodeInput" class="form-label">Pincode</label>
+														<input type="text" class="form-control" id="pincode" name="pincode" required>
+														<button id="fetchButton">get</button>
+													</div>
+													
+												</div>
+												<div class="row" id="pincodeResult">
+												</div>
+											
+												<div class="modal-footer">
+													<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+													<button type="submit" class="btn btn-success">ADD</button>
+												</div>
+											</form>
+										</div>
 									</div>
-                
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-success">ADD</button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+									
+								</div>
+								
+							</div>
+						</div>
+						{% for address in user_data %}
+
+						<div class="border shadow mb-2 p-3">
+							<strong>Address{{forloop.counter}}: </strong>
+							<strong>Name:</strong> {{ address.name }},
+							<strong>Gender:</strong> {{ address.gender }},
+							<strong>Mobile:</strong> {{ address.mobile }},
+							<strong>Address Type:</strong> {{ address.address_type }},
+							<strong>Place:</strong> {{ address.place }},
+							<strong>Address:</strong> {{ address.address }},
+							<strong>Landmark:</strong> {{ address.landmark }}
+						</div>
+						{% endfor %}
+						</div>
+					</div>
+					
+			
+			 
+				
+				
+		
+					</div>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+		
     
-      
-    <!-- Assuming you have a block or section for displaying user addresses -->
-<div class="user-addresses">
-  <h2>Your Addresses</h2>
-  <div class="row">
-      {% for address in user_data %}
-      <div class="col-md-6">
-        <div class="card mb-4">   
-            <div class="card-body">
-                <h5 class="card-title">Address{{ forloop.counter }}</h5>
-                <p class="card-text">
-                  <strong>Name:</strong> {{ address.name }}<br>
-                  <strong>Gender:</strong> {{ address.gender }}<br>
-                  <strong>Mobile:</strong> {{ address.mobile }}<br>
-                  <strong>Address Type:</strong> {{ address.address_type }}<br>
-                  <strong>Place:</strong> {{ address.place }}<br>
-                  <strong>Address:</strong> {{ address.address }}<br>
-                  <strong>Landmark:</strong> {{ address.landmark }}<br>
-									
-									
-									
-            </p>
-          </div>
-      </div>
-  </div>
- 
-  
-  {% endfor %}
-</div>
-</div>
 
 	
 		
