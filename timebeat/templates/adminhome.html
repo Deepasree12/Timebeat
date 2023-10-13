@@ -122,36 +122,19 @@
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
                     aria-expanded="true" aria-controls="collapsePages">
                     <i class="fas fa-fw fa-folder"></i>
-                    <span>Pages</span>
+                    <span>Admin</span>
                 </a>
                 <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Login Screens:</h6>
-                        <a class="collapse-item" href="login.html">Login</a>
-                        <a class="collapse-item" href="register.html">Register</a>
+                       
                         <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
-                        <div class="collapse-divider"></div>
-                        <h6 class="collapse-header">Other Pages:</h6>
-                        <a class="collapse-item" href="404.html">404 Page</a>
-                        <a class="collapse-item" href="blank.html">Blank Page</a>
+                        
                     </div>
                 </div>
             </li>
 
             <!-- Nav Item - Charts -->
-            <li class="nav-item">
-                <a class="nav-link" href="charts.html">
-                    <i class="fas fa-fw fa-chart-area"></i>
-                    <span>Charts</span></a>
-            </li>
-
-            <!-- Nav Item - Tables -->
-            <li class="nav-item">
-                <a class="nav-link" href="tables.html">
-                    <i class="fas fa-fw fa-table"></i>
-                    <span>Tables</span></a>
-            </li>
-
+            {% comment %}
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
 
@@ -252,10 +235,7 @@
                                     <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Settings
                                 </a>
-                                <a class="dropdown-item" href="#">
-                                    <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Activity Log
-                                </a>
+                                
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
                                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
@@ -364,7 +344,7 @@ $(document).ready(function () {
     var cancelledCount = {{ cancelled|length}};
     var pendingCount = {{ pending|length}};
     var myChart = new Chart(ctx, {
-        type: 'pie',
+        type: 'doughnut',
         data: {
             labels: ['Delivered', 'On the way', 'Cancelled'],
             datasets: [{
@@ -394,43 +374,55 @@ $(document).ready(function () {
         }
     });
 });
-$(document).ready(function () {
-    var ctx = document.getElementById('barchart').getContext('2d');
-    var deliveredCount = {{ delivered|length}};
-    var cancelledCount = {{ cancelled|length}};
-    var pendingCount = {{ pending|length}};
+
+
+</script>
+
+<script>
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var data = {
+        labels: [],
+        datasets: [
+            {
+                label: 'Monthly Revenue',
+                data: [],
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1
+            },
+            {
+                label: 'Order Count',
+                data: [],
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }
+        ]
+    };
+
+    var monthlyData = JSON.parse('{{ monthly_revenue|safe }}');
+    monthlyData.forEach(function(item) {
+        data.labels.push(item.month);
+        data.datasets[0].data.push(item.total_revenue);
+        data.datasets[1].data.push(item.order_count);
+    });
+
+    var options = {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    };
+
     var myChart = new Chart(ctx, {
         type: 'bar',
-        data: {
-            labels: ['Delivered', 'On the way', 'Cancelled'],
-            datasets: [{
-                label: '# of Users',
-                data: [deliveredCount,cancelledCount,pendingCount], // Example values for each label
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)'
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)'
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
+        data: data,
+        options: options
     });
-});
 </script>
+
+
 
 {%endblock scripts%}
                     
@@ -482,7 +474,7 @@ $(document).ready(function () {
                 <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="login.html">Logout</a>
+                    <a class="btn btn-primary" href="{% url "adminlogout" %}">Logout</a>
                 </div>
             </div>
         </div>

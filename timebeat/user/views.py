@@ -341,15 +341,15 @@ class ReviewUpdate(View):
         comment = request.POST.get('review')
         rating = request.POST.get('rating')
         
-        # variant = get_object_or_404(Variant, pk=pk)
-        # product = variant.product
+        product = get_object_or_404(Product, pk=pk)
+    
 
-        # review, created = Review.objects.update_or_create(
-        #     user=request.user,
-        #     product=product,
-        #     defaults={'comment': comment, 'rate': rating}
-        # )
-        print(comment,rating)
+        review, created = Review.objects.update_or_create(
+            user=request.user,
+            product=product,
+            defaults={'comment': comment, 'rate': rating}
+        )
+        
 
         return redirect(request.META.get('HTTP_REFERER'))
 

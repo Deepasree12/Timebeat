@@ -306,7 +306,7 @@
 												<div class="d-flex align-items-center gap-2 pt-2">
 													{% comment %} {% if item.count > 1 %} {% endcomment %}
 													<a class="text-decoration-none text-body-tertiary" {% if item.count > 1 %} href="{% url 'decrement_cart' item.product_variant.id %}" {% endif %}>
-													<i class="bi bi-dash-circle-fill h5"></i></a>
+														<i class="bi bi-dash-circle-fill h5"></i></a>
 													{% comment %} {% else %}
 													<a href=""><i class="bi bi-dash-circle-fill text-body-tertiary h5"></i></a>
 													{% endif %} {% endcomment %}

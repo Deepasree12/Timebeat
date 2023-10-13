@@ -1,10 +1,11 @@
 from django.shortcuts import render,redirect,get_object_or_404
+from django.contrib.auth import logout
 from .models import * 
 from user.models import * 
 from django.http import JsonResponse
-from django.db.models import Sum
+from django.db.models import Sum,Count
 from datetime import date
-
+from django.db.models.functions import TruncMonth
 from django.views import View
 
 
@@ -17,7 +18,13 @@ def adminhome(request):
     customers=User.objects.filter(is_superuser=False)
     products=Product.objects.all()
     total_revenue = Order.objects.aggregate(total_revenue=Sum('final_price'))['total_revenue']
-
+    monthly_revenue = Order.objects.annotate(
+        month=TruncMonth('created_at')
+    ).values('month').annotate(
+        total_revenue=Sum('final_price'),
+        order_count=Count('id')
+    ).order_by('month')
+   
     return render(request, 'adminhome.html', {
         'pending': pending,
         'cancelled': cancelled,
@@ -25,7 +32,9 @@ def adminhome(request):
         'order':order,
         'customers':customers,
         'products':products,
-        'total_revenue':total_revenue
+        'total_revenue':total_revenue,
+        'monthly_revenue':monthly_revenue
+
     })
 class admin_user_managemnt(View):
     def get(self,request):
@@ -46,7 +55,10 @@ class UserAccess(View):
 def adminsignup(request):
     return render(request,'adminsignup.html')
 
-
+class AdminLogout(View):
+    def get(self,request):
+        logout(request)  
+        return redirect('adminhome')
 
 
 class Category_view(View):
