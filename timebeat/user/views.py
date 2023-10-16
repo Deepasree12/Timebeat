@@ -13,7 +13,7 @@ from cart. models import *
 from store.models import *
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import get_object_or_404
+from django.http import Http404
 from django.views import View
 from user.models import User
 from django.db.models import Q
@@ -26,8 +26,10 @@ from django.template.loader import get_template
 from xhtml2pdf import pisa
 from django.http import HttpResponse
 from django.db.models import Min,Max
-
-
+from .email import *
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.urls import reverse
+from django.shortcuts import render,redirect,get_object_or_404
 class index(View):
     def get(self,request):
         category=Category.objects.all()
@@ -112,23 +114,48 @@ class signin(View):
     # form = AuthenticationForm()
     
     
-class ResetPassword(View):
+class ForgotPassword(View):
     def get(self,request):
-        
-        return render(request,'reset.html')
+        return render(request,'forgot.html')
+    
     def post(self,request):
 
         email = request.POST.get('email')
-        emailUser = User.objects.filter(email=email).exists()
-        # if emailUser:
-        #     resetlink=f'{request.scheme}://{request.get_host()}{reverse('user_reset',args=[encrypt_id])}'
-        #     cache_key=f'reset_link_{encrypt_id}'cache.set(cache_key,{'reset_link':reset_link},timeout=60)
-        #     reset_password_email(email,reset_link)
-        
-       
-        return redirect(request.META.get('HTTP_REFERER'))
+        try:
+            user = User.objects.get(email=email)
+        except:
+            messages.error(request, 'You are not registerd, Please sign up')
+            return redirect('signup')
+
+        encrypt_id = urlsafe_base64_encode(str(user.pk).encode())
+        reset_link = f"{request.scheme}://{request.get_host()}{reverse('resetpassword', args=[encrypt_id])}"
+        cache_key = f"reset_link_{encrypt_id}"
+        cache.set(cache_key, {'reset_link': reset_link}, timeout=60)
+        reset_password_email(email,reset_link)
+        return redirect('signin')
 
 
+  
+class UserResetPassword(View):
+
+  def get(self, request, encrypt_id):
+    cache_key = f"reset_link_{encrypt_id}"
+    cache_data = cache.get(cache_key)
+    if not cache_data:
+        raise Http404("Reset link has expired")
+    return render(request, 'reset-password.html')
+
+  def post(self, request, encrypt_id):
+    cache_key = f"reset_link_{encrypt_id}"
+    id = str(urlsafe_base64_decode(encrypt_id), 'utf-8')
+    user = User.objects.get(pk=id)
+    new_password = request.POST.get('pass')
+    user.set_password(new_password)
+    user.save()
+    cache.delete(cache_key)
+    messages.success(
+        request, 'Password reset successful. You can now log in with your new password.')
+    return redirect('signin')
 
 class productlist(View):
     def get(self,request):
@@ -196,7 +223,15 @@ class productlist(View):
         
         return render(request,'productlist.html',{"page":page,"brands":brands,"colors":colors,'brand_filter':brand_filter, 'color_filter':color_filter,
         'context':context  })
-  
+    
+class CategoryProductList(View):
+    def get(self,request,category):
+        
+        category=Category.objects.filter(name=category).first()
+        products=Product.objects.filter(category=category)
+        # print(category)
+        return render(request, 'categorylist.html',{'products':products})
+ 
 
 class productdetail(View):
     def get(self,request,pk):
@@ -299,17 +334,20 @@ class Checkout(View):
         address_id = request.POST.get('address')
         payment_method = request.POST.get('payment_method')
         cart=request.user.cart
-       
+
         address = UserAddress.objects.get(id=address_id)
         order = Order.objects.create(user=request.user, address=address, payment_mode=payment_method,total_discount_price=cart.total_discount_price,
                                      coupon_discount=cart.coupon_discount_price,total_selling_price=cart.total_selling_price,
                                      final_price=cart.final_price,total_actual_price=cart.total_actual_price)
         
-        
+        # if Variant.stock >= order:
+        #     Variant.stock-= order
+        #     Variant.save()
         
         for item in request.user.cart.cartitems.all():
             product_variant = item.product_variant
-            
+            product_variant.stock-=item.count
+            product_variant.save()
             total_price = item.total_price
             count = item.count
             total_actual_price=item.total_actual_price

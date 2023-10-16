@@ -109,10 +109,7 @@
 								<a href="{% url 'productlist' %}">Products</a>
 							</li>
 
-							<li class="label1" data-label1="hot">
-								<a href="shoping-cart.html">Deals</a>
-							</li>
-
+							
 							<li>
 								<a href="blog.html">Blog</a>
 							</li>
@@ -223,10 +220,7 @@
 					<a href="{% url 'productlist' %}">Products</a>
 				</li>
 
-				<li class="label1" data-label1="hot">
-					<a href="shoping-cart.html">Deals</a>
-				</li>
-
+				
 				<li>
 					<a href="blog.html">Blog</a>
 				</li>
@@ -351,12 +345,7 @@
 						<span class="mtext-90 cl3  ">
 							stock:&nbsp;{{varient.stock}}
 						</span>
-						<td class="column-4">
-							{% if item.out_of_stock %}
-									<span class="out-of-stock-message">Out of Stock</span>
-								{% endif %}
-
-					</td>
+						
 			</tr>
 						</div>
 						<div class="d-flex align-items-center">
@@ -375,10 +364,16 @@
                 </div>
 								<br>
 									<div class="d-flex gap-2 col-5 py-3">
-                    <a href="{% url 'add_to_cart' pk=varient.id %}" class="btn btn-success border-0 colorg py-2 col mr-4" type="button">
-											<i class="bi bi-cart3"></i> ADD TO CART
-									</a>
-                    <button class="btn btn-success border-0 colorg py-2 col" type="button"><i class="bi bi-lightning"></i> BUY NOW</button>
+                    {% if product.variant.stock > 0 %}
+										<button class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail">
+											Add to cart
+										</button>
+										{% else %}
+										<button class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail">
+											Stock out
+										</button>
+										{% endif %} 
+                    {% comment %} <button class="btn btn-success border-0 colorg py-2 col" type="button"><i class="bi bi-lightning"></i> BUY NOW</button> {% endcomment %}
                 </div>
 								</div>
 							</div>	
@@ -612,7 +607,7 @@
 														</ul>
 													</div>
 												</div>
-								      {% endif %}
+								 {% endif %}
 
 													<div class="row border">
 													
@@ -882,11 +877,15 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 												<i class="fs-16 zmdi zmdi-plus"></i>
 											</div>
 										</div>
-
+										{% comment %} {% if product.variant.stock > 0 %}
 										<button class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail">
 											Add to cart
 										</button>
-										
+										{% else %}
+										<button class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail">
+											Stock out
+										</button>
+										{% endif %} {% endcomment %}
 									</div>
 								</div>	
 								<div class="flex-w flex-m p-l-100 p-t-40 respon7">
