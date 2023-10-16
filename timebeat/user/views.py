@@ -112,6 +112,22 @@ class signin(View):
     # form = AuthenticationForm()
     
     
+class ResetPassword(View):
+    def get(self,request):
+        
+        return render(request,'reset.html')
+    def post(self,request):
+
+        email = request.POST.get('email')
+        emailUser = User.objects.filter(email=email).exists()
+        # if emailUser:
+        #     resetlink=f'{request.scheme}://{request.get_host()}{reverse('user_reset',args=[encrypt_id])}'
+        #     cache_key=f'reset_link_{encrypt_id}'cache.set(cache_key,{'reset_link':reset_link},timeout=60)
+        #     reset_password_email(email,reset_link)
+        
+       
+        return redirect(request.META.get('HTTP_REFERER'))
+
 
 
 class productlist(View):
@@ -368,10 +384,8 @@ class Invoice(View):
         return response
 
 
-class reset(View):
-    def get(self,request):
-        
-        return render(request,'reset.html')
+
+    
 
 
 class logout_view(View):

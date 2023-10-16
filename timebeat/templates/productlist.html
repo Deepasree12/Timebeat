@@ -273,13 +273,7 @@
 					<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".men">
 						Men
 					</button> {% endcomment %}
-					<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".men">
-						<li class="p-b-6">
-							{% comment %} <a href="#" class="filter-link stext-106 trans-04"> {% endcomment %}
-								Popularity
-							</a>
-						</li>
-					</button>
+					
 					
 				<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".men">
 					<li class=" p-b-6" onclick="filterNew('new_arrivals')" style="cursor: pointer;">
@@ -318,11 +312,13 @@
 						 Filter
 					</div>
 
-					<div class="flex-c-m stext-106 cl6 size-105 bor4 pointer hov-btn3 trans-04 m-tb-4 js-show-search">
+					<div class="flex-c-m stext-106 cl6 size-105 bor4 pointer hov-btn3 trans-04 m-tb-4 js-show-search ">
 						<i class="icon-search cl2 m-r-6 fs-15 trans-04 zmdi zmdi-search"></i>
 						<i class="icon-close-search cl2 m-r-6 fs-15 trans-04 zmdi zmdi-close dis-none"></i>
 						Search
 					</div>
+
+					<div class="btn btn-primary" id="clearButton" style="width:100px;">clear</div>
 				</div>
 				
 
@@ -648,10 +644,7 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 	<script>
 		let currentUrl = new URL(window.location.href);
   	let urlparams = new URLSearchParams(currentUrl.search);
-    {% comment %} {% for brand in brands %}
-    const checkbox{{ forloop.counter }} = document.getElementById('brand{{ forloop.counter }}');
-    checkbox{{ forloop.counter }}.checked = urlparams.has('brand_items') && urlparams.getAll('brand_items').includes('{{ brand.name }}');
-    {% endfor %} {% endcomment %}
+  
 
     function brand(checkbox, brandname) {
         const urlParams = new URLSearchParams(window.location.search);
@@ -673,10 +666,7 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
         window.location.href = currentUrl.toString();
     }
 
-		{% comment %} {% for color in colors %}
-    	const checkbox{{ forloop.counter }} = document.getElementById('color{{ forloop.counter }}');
-    	checkbox{{ forloop.counter }}.checked = urlparams.has('color_items') && urlparams.getAll('color_items').includes('{{ color.title }}');
-		{% endfor %} {% endcomment %}
+	
 
 		function color(checkbox, colortitle) {
     	const urlParams = new URLSearchParams(window.location.search);
@@ -697,30 +687,6 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 
     window.location.href = currentUrl.toString();
 }
-function price(checkbox) {
-	const urlParams = new URLSearchParams(window.location.search);
-
-	// Check if the checkbox is checked
-	if (checkbox.checked) {
-			const minPrice = checkbox.getAttribute('data-min');
-			const maxPrice = checkbox.getAttribute('data-max');
-
-			urlParams.set('min_price', minPrice);
-			urlParams.set('max_price', maxPrice);
-	} else {
-			urlParams.delete('min_price');
-			urlParams.delete('max_price');
-	}
-
-	// Construct the new URL
-	const currentUrl = new URL(window.location.href);
-	currentUrl.search = urlParams.toString();
-
-	// Redirect to the updated URL
-	window.location.href = currentUrl.toString();
-}
-
-
 
 function pagination(page_number){
 	urlparams.set('page', page_number);
@@ -747,7 +713,12 @@ function filterNew(newarrivals) {
 }
 
 </script>
-
+<script>
+	
+	document.getElementById("clearButton").addEventListener("click", function() {
+		window.location.href = "http://127.0.0.1:8000/productlist/";
+	});
+</script>
 <!--===============================================================================================-->	
 	<script src="{% static '/vendor/jquery/jquery-3.2.1.min.js' %}"></script>
 <!--===============================================================================================-->
@@ -791,19 +762,37 @@ function filterNew(newarrivals) {
 		});
 	</script>
 	<script src="{% static 'js/wrunner-jquery.js' %}"></script>
-	<script>
+ <script>
+		$(document).ready(function() {
+			var urlParams = new URLSearchParams(window.location.search);
+			var minValueFromUrl = urlParams.get('min');
+			var maxValueFromUrl = urlParams.get('max');
+	
+			var slider = $('.my-js-slider');
+			var count = 0;
+	
+			slider.wRunner({
+				type: 'range',
+				rangeValue: {
+					minValue: minValueFromUrl || 0,
+					maxValue: maxValueFromUrl || 10000,
+				},
+				step: 100,
+				onValueUpdate: function(values) {
+					count++;
+					if (count > 7) {
+						let currentUrl = new URL(window.location.href);
+						let urlparams = new URLSearchParams(currentUrl.search);
+						urlparams.set('min', values.minValue);
+						urlparams.set('max', values.maxValue);
+						currentUrl.search = urlparams.toString();
+						window.location.href = currentUrl.toString();
+					}
+				}
+			});
+	  });
 		
-		$(document).ready(function(){
-			$('.my-js-slider').wRunner({
-					 type: 'range',
-					 rangeValue: {
-								minValue: 1000,
-								maxValue: 5000,
-										 },
-					 step: 1,
-				})
-		})
-	</script>
+	</script> 
 <!--===============================================================================================-->
 	<script src="{% static '/images/product-04.jpg' %}"></script>
 <!--===============================================================================================-->
@@ -846,21 +835,7 @@ function filterNew(newarrivals) {
 	</script> {% endcomment %}
 	<!--===============================================================================================-->
 
-	$("#maxPrice").on('blur',function(){
-	var  _min=$(this).attr('min');
-	var _max=$(this).attr('max');
-	var _value=$(this).val();
-	console.log(_value,_min,_max);
-	if(_value < parseInt(_min) || _value > parseInt(_max)){
-		alert('values should be '+_min+'-'+_max);
-		$(this).val(_min);
-		$(this).val(_min);
-		$(this).focus();
-		$("#rangeInput").val(_min);
-		return false;
-	}
 
-}	);
 <script src="{% static '/vendor/perfect-scrollbar/perfect-scrollbar.min.js' %}"></script>
 	<script>
 		$('.js-pscroll').each(function(){
@@ -891,5 +866,6 @@ function filterNew(newarrivals) {
     window.location.href = currentUrl.toString();
   }
 </script>
+
 </body>
 </html>

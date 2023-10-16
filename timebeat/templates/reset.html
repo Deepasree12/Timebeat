@@ -85,34 +85,61 @@
 </style>
 </head>
 <body>
-<div class="signup-form">
-    <form action="/examples/actions/confirmation.php" method="post" class="form-horizontal">
-		<div class="col-xs-8 col-xs-offset-4">
-			<h2>Reset Password</h2>
-		</div>		
-        <div class="form-group">
-			<label class="control-label col-xs-4">email id</label>
-			<div class="col-xs-8">
-                <input type="text" class="form-control" name="username" required="required">
-            </div>        	
-        </div>
-        <div class="form-group">
+	<div class="text-center">
+		<h1 class="h4 text-gray-900 mb-2">Forgot Your Password?</h1>
+		<p class="mb-4"> Just enter your email address below
+				and we'll send you a link to reset your password!</p>
+</div>
+			<div class="signup-form">
+					<form action="." method="post" class="form-horizontal">
+							{% csrf_token %}
+							<div class="col-xs-8 col-xs-offset-4">
+									<h2>Reset Password</h2>
+							</div>
+							<div class="form-group">
+									<label class="control-label col-xs-4" for="email">Email ID</label>
+									<div class="col-xs-8">
+											<input type="text" class="form-control" id="email" name="email" required="required">
+									</div>
+							</div>
+							<div class="form-group">
+									<div class="col-xs-8 col-xs-offset-4">
+											<button type="submit" class="btn btn-primary btn-lg">Send</button>
+									</div>
+							</div>
+					</form>
+					<div class="text-center">
+						<a class="small" href="{% url "signup" %}">Create an Account!</a>
+				</div>
+				<div class="text-center">
+						<a class="small" href="{% url "signin" %}">Already have an account? Login!</a>
+				</div>
+			</div>
+	</body>
+	</html>
+	
+
+
+
+
+
+{% comment %} <div class="form-group">
           <label class="control-label col-xs-4">OTP</label>
           <div class="col-xs-4">
                     <input type="otp" class="form-control" name="otp" required="required">
                     
                 </div>
-                <div class="col-xs-2"> 
-                <button type="submit" class="btn btn-primary btn-lg">submit</button>
-                </div>       	
-            </div>
+                       	
+            </div> {% endcomment %}
 		{% comment %} <div class="form-group">
 			<label class="control-label col-xs-4">Email Address</label>
 			<div class="col-xs-8">
                 <input type="email" class="form-control" name="email" required="required">
             </div>        	
         </div> {% endcomment %}
-		<div class="form-group">
+
+
+		{% comment %} <div class="form-group">
 			<label class="control-label col-xs-4">New Password</label>
 			<div class="col-xs-8">
                 <input type="password" class="form-control" name="password" required="required">
@@ -123,25 +150,5 @@
           <div class="col-xs-8">
                     <input type="password" class="form-control" name="confirm_password" required="required">
                 </div>        	
-            </div>
-		{% comment %} <div class="form-group">
-			<label class="control-label col-xs-4">Confirm Password</label>
-			<div class="col-xs-8">
-                <input type="password" class="form-control" name="confirm_password" required="required">
-            </div>        	
-        </div> {% endcomment %}
-		<div class="form-group">
-			<div class="col-xs-8 col-xs-offset-4">
-				
-				<button type="submit" class="btn btn-primary btn-lg">Reset Password</button>
-        
-			</div>  
-		</div>
-    <br>	
-    {% comment %} <div class="text-center">Dont have account?  <a href="signup">Signup here</a></div><br>
-        <div class="text-center">Forgot password?  <a href="reset">Reset Password</a></div>	       {% endcomment %}
-    </form>
+            </div> {% endcomment %}
 	
-</div>
-</body>
-</html>
