@@ -364,7 +364,8 @@
                 </div>
 								<br>
 									<div class="d-flex gap-2 col-5 py-3">
-                    {% if product.variant.stock > 0 %}
+                    {% if varient.stock > 0 %}
+										
 										<button class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail">
 											Add to cart
 										</button>
@@ -931,9 +932,9 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
       else{
         star.classList.replace("text-warning","text-secondary");
         star.innerHTML = '<i class="bi bi-star"  data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Excellent"></i>';
-      }
-    }
-  }
+ }
+		}
+	}
 </script>							
 
 <!--===============================================================================================-->	

@@ -231,7 +231,13 @@ class CategoryProductList(View):
         products=Product.objects.filter(category=category)
         # print(category)
         return render(request, 'categorylist.html',{'products':products})
- 
+class Subcategorylist(View):
+     def get(self,request,subcategory):
+        
+        subcategory=Subcategory.objects.get(name=subcategory)
+        print(subcategory)
+        products=Product.objects.filter(subcategory=subcategory)
+        return render(request, 'subcategorylist.html',{'products':products})
 
 class productdetail(View):
     def get(self,request,pk):

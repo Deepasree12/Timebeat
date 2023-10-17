@@ -20,5 +20,6 @@ urlpatterns=[
     path('invoice/<uuid:pk>/',views.Invoice.as_view(),name='invoice'),
     path('review/<uuid:pk>/',views.ReviewUpdate.as_view(),name='reviewupdated'),
     path('productcategory/<str:category>/',views.CategoryProductList.as_view(),name='catgoryproducts'),
+    path('productsubcategory/<str:subcategory>/',views.Subcategorylist.as_view(),name='subcatgoryproducts'),
     
 ]
