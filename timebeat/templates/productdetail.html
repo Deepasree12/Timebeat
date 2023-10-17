@@ -366,11 +366,9 @@
 									<div class="d-flex gap-2 col-5 py-3">
                     {% if varient.stock > 0 %}
 										
-										<button class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail">
-											Add to cart
-										</button>
+										<a href="{% url "add_to_cart" pk=varient.id %}" class="btn btn-success border-0 colorg py-2 col" ><i class="bi bi-lightning"></i>ADD TO CART</a>
 										{% else %}
-										<button class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail">
+										<button class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 ">
 											Stock out
 										</button>
 										{% endif %} 
@@ -878,15 +876,13 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 												<i class="fs-16 zmdi zmdi-plus"></i>
 											</div>
 										</div>
-										{% comment %} {% if product.variant.stock > 0 %}
-										<button class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail">
+								 
+										{% comment %} <button class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail">
 											Add to cart
-										</button>
-										{% else %}
-										<button class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail">
-											Stock out
-										</button>
-										{% endif %} {% endcomment %}
+										</button> {% endcomment %}
+										
+										
+										
 									</div>
 								</div>	
 								<div class="flex-w flex-m p-l-100 p-t-40 respon7">
@@ -1016,7 +1012,7 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 			$(this).on('click', function(){
 				swal(nameProduct, "is added to cart !", "success");
 			});
-		});
+		}); 
 	
 	</script>
 <!--===============================================================================================-->
