@@ -6,6 +6,7 @@
 <table class="table table-striped table-bordered table-sm" cellspacing="0" width="100%" id="dataTable">
   <thead>
     <tr>
+      <th>serial no</th>
       <th class="th-sm">Order ID</th>
       <th class="th-sm">User Name</th>
       <th class="th-sm">Address</th>
@@ -21,6 +22,7 @@
   <tbody>
     {% for order in orders %}
 <tr>
+  <td>{{forloop.counter}}</td>
   <td><a href="{% url 'adminorderitem' pk=order.id %}">{{ order.id }}</td>
   <td>{{ order.user.name }}</td>
   <td>{{ order.address.address }}</td>

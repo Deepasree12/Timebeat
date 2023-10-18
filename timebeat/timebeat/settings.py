@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    'django.contrib.sites',
     
 ]
 
@@ -82,8 +83,8 @@ TEMPLATES = [
         },
     },
 ]
-GOOGLE_CLIENT_ID="569089977695-fc0t0909ogvqgefsjt4r9ang4c19vtgs.apps.googleusercontent.com"
-GOOGLE_CLIENT_SECRET="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"
+GOOGLE_CLIENT_ID="569089977695-jq6e2h3n9i3j9t7m7v76h0nh80vm4muu.apps.googleusercontent.com"
+GOOGLE_CLIENT_SECRET="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"
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
@@ -92,8 +93,8 @@ AUTHENTICATION_BACKENDS = [
 SOCIALACCOUNT_PROVIDERS = {
     "google": {
         "APP": {
-            "client_id": '569089977695-fc0t0909ogvqgefsjt4r9ang4c19vtgs.apps.googleusercontent.com',
-            "secret": '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',
+            "client_id": '569089977695-jq6e2h3n9i3j9t7m7v76h0nh80vm4muu.apps.googleusercontent.com',
+            "secret": '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',
         },
         "SCOPE": [
             "profile",
