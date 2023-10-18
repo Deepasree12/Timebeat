@@ -1,4 +1,5 @@
 {% load static %}
+{% load socialaccount %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,15 +25,15 @@
       </div>
 			<br>
 			<h2>Signin</h2>
-		</div>		
-        {% comment %} <div class="form-group">
-			<label class="control-label col-xs-4">Username</label>
-			<div class="col-xs-8">
-                <input type="text" class="form-control" name="username" required="required">
-            </div>        	
-        </div> {% endcomment %}
+		</div>
+		<div>	
+		<a class=" " href="{% provider_login_url 'google' method='oauth2' %}" role="button" style="display: block; text-align: center;">
+			<img class="img-fluid" src="{% static 'images/google.svg' %}" alt="google" style="width: 200px; margin: 0 auto;">
+	 </a>
+	</div>	<br>
 		<div class="form-group">
 			<label class="control-label col-xs-4">Email Address</label>
+
 			<div class="col-xs-8">
                 <input type="email" class="form-control" name="email" required="required">
             </div>        	
@@ -43,12 +44,7 @@
                 <input type="password" class="form-control" name="password" required="required">
             </div>        	
         </div>
-		{% comment %} <div class="form-group">
-			<label class="control-label col-xs-4">Confirm Password</label>
-			<div class="col-xs-8">
-                <input type="password" class="form-control" name="confirm_password" required="required">
-            </div>        	
-        </div> {% endcomment %}
+		
 		<div class="form-group">
 			<div class="col-xs-8 col-xs-offset-4">
 				

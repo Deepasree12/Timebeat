@@ -43,6 +43,10 @@ INSTALLED_APPS = [
     'store',
     'cart',
     'wishlist',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
     
 ]
 
@@ -55,8 +59,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    
-]
+    'allauth.account.middleware.AccountMiddleware',
+
+    ]
+
 
 ROOT_URLCONF = 'timebeat.urls'
 
@@ -76,11 +82,49 @@ TEMPLATES = [
         },
     },
 ]
+GOOGLE_CLIENT_ID="569089977695-fc0t0909ogvqgefsjt4r9ang4c19vtgs.apps.googleusercontent.com"
+GOOGLE_CLIENT_SECRET="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"
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+SOCIALACCOUNT_PROVIDERS = {
+    "google": {
+        "APP": {
+            "client_id": '569089977695-fc0t0909ogvqgefsjt4r9ang4c19vtgs.apps.googleusercontent.com',
+            "secret": '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',
+        },
+        "SCOPE": [
+            "profile",
+            "email",
+        ],
+        "AUTH_PARAMS": {
+            "access_type": "online",
+ }
+}
+}
+SITE_ID = 1
+LOGIN_URL = 'signin'
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'home'
+
+# Additional configuration settings
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+# ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+
+SOCIALACCOUNT_LOGIN_ON_GET=True
+
+
 
 WSGI_APPLICATION = 'timebeat.wsgi.application'
-LOGIN_URL= 'signin'
-LOGIN_REDIRECT_URL ='home'
-LOGOUT_REDIRECT_URL='home'
+# LOGIN_URL= 'signin'
+# LOGIN_REDIRECT_URL ='home'
+# LOGOUT_REDIRECT_URL='home'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
