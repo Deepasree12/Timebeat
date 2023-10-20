@@ -7,6 +7,7 @@ from django.db.models import Sum,Count
 from datetime import date
 from django.db.models.functions import TruncMonth
 from django.views import View
+from cart.models import * 
 
 
 
@@ -127,7 +128,8 @@ class product_view(View):
        subdata=Subcategory.objects.all()
        brand=Brand.objects.all()
        product=Product.objects.all()
-       return render(request, 'productsview.html',{'data':data,'p_subcategory':subdata,'brand':brand,'product':product})
+       
+       return render(request, 'productsview.html',{'data':data,'p_subcategory':subdata,'brand':brand,'product':product,})
        
        
    
@@ -145,7 +147,7 @@ class product_view(View):
         category = Category.objects.get(id=cat)
         subcategory =Subcategory.objects.get(id=subcat)
         brand=Brand.objects.get(id=brand)
-       
+        
         Product.objects.create(name=name, category=category,subcategory=subcategory,description=details,brand=brand)
 
         return redirect('productview')

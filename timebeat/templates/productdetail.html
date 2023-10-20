@@ -365,8 +365,18 @@
 								<br>
 									<div class="d-flex gap-2 col-5 py-3">
                     {% if varient.stock > 0 %}
-										
-										<a href="{% url "add_to_cart" pk=varient.id %}" class="btn btn-success border-0 colorg py-2 col" ><i class="bi bi-lightning"></i>ADD TO CART</a>
+
+												{% if varient.is_in_cart %} 
+												<a href="{% url "cart" %}" class="btn btn-success border-0 colorg py-2 col">
+														<i class="bi bi-lightning"></i> GO TO CART
+												</a>
+												{% else %}
+												<a href="{% url "add_to_cart" pk=varient.id %}" class="btn btn-success border-0 colorg py-2 col">
+														<i class="bi bi-lightning"></i> ADD TO CART
+												</a>
+												{% endif %}
+												{% comment %} <a href="{% url "add_to_cart" pk=varient.id %}" class="btn btn-success border-0 colorg py-2 col" ><i class="bi bi-lightning"></i>ADD TO CART</a> {% endcomment %}
+											
 										{% else %}
 										<button class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 ">
 											Stock out

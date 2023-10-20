@@ -244,7 +244,19 @@ class productdetail(View):
         reviews=0
         rating_data={}
         varient = get_object_or_404(Variant, pk=pk)
-        current_user = request.user
+        if request.user.is_authenticated:
+            user_cart = request.user.cart
+            cartitems = CartItem.objects.filter(cart=user_cart)
+            varient.is_in_cart = False
+            for item in cartitems:
+                if varient == item.product_variant:
+                    varient.is_in_cart = True
+                    break
+        else:
+            cart_id = request.session.get('cart_id')
+            if cart_id:
+                cartitems = CartItem.objects.filter(cart_id=cart_id)
+                varient.is_in_cart = cartitems.filter(product_variant=varient).exists()
         product = varient.product
         reviews = Review.objects.filter(product=product)
         if varient.product.reviews.all():
@@ -265,7 +277,7 @@ class productdetail(View):
                     if varient.product == item.Product_variant.product:
                         varient.is_in_order = True
                         break
-        return render(request,'productdetail.html',{"varient":varient,'current_user':current_user,'reviews':reviews,'rating_data':rating_data,})
+        return render(request,'productdetail.html',{"varient":varient,'reviews':reviews,'rating_data':rating_data})
     def post(self,request,pk):
 
         comment = request.POST.get('review')

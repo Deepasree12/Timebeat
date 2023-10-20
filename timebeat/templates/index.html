@@ -253,7 +253,10 @@
 	<section class="section-slide">
 		<div class="wrap-slick1">
 			<div class="slick1">
-				<div class="item-slick1" style="background-image: url("{% static '/images/slide-01.jpg' %}");">
+				<div class="item-slick1" >
+					<div class="background-image">
+					<img src="{% static 'images/banner-1.webp'%}" alt="IMG-BANNER">
+					</div>
 					<div class="container h-full">
 						<div class="flex-col-l-m h-full p-t-100 p-b-30 respon5">
 							<div class="layer-slick1 animated visible-false" data-appear="fadeInDown" data-delay="0">
@@ -277,7 +280,11 @@
 					</div>
 				</div>
 
-				<div class="item-slick1" style="background-image: url("{% static '/images/slide-02.jpg'%}");">
+				<div class="item-slick1" >
+					<div class="background-image">
+					<img src="{% static 'images/abcd.webp' %}" alt="IMG-BANNER">
+				</div>
+				{% comment %} style="background-image: url("{% static '/images/banner-3.webp'%}");"> {% endcomment %}
 					<div class="container h-full">
 						<div class="flex-col-l-m h-full p-t-100 p-b-30 respon5">
 							<div class="layer-slick1 animated visible-false" data-appear="rollIn" data-delay="0">
@@ -302,8 +309,10 @@
 				</div>
 
 				<div class="item-slick1" >
-				<img src="{% static 'images/.jpg' %}" alt="IMG-BANNER">
-					<div class="container h-full">
+					<div class="background-image">
+				<img src="{% static 'images/2000x886-rado.webp' style="width:30%"%}" alt="IMG-BANNER">
+					</div>
+					{% comment %} <div class="container h-full">
 						<div class="flex-col-l-m h-full p-t-100 p-b-30 respon5">
 							<div class="layer-slick1 animated visible-false" data-appear="rotateInDownLeft" data-delay="0">
 								<span class="ltext-101 cl2 respon2">
@@ -321,7 +330,7 @@
 								<a href="product.html" class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04">
 									Shop Now
 								</a>
-							</div>
+							</div> {% endcomment %}
 						</div>
 					</div>
 				</div>
@@ -336,6 +345,7 @@
 			<div class="col-md-6 col-xl-4 p-b-30 m-lr-auto">
 				<!-- Block1 -->
 				<div class="block1 wrap-pic-w">
+					
 					<img src="{% static 'images/sm.jpg' %}"  style="width:300px" alt="IMG-BANNER">
 
 					<a href="{% url "subcatgoryproducts" 'smart' %}" class="block1-txt ab-t-l s-full flex-col-l-sb p-lr-38 p-tb-34 trans-03 respon3">
