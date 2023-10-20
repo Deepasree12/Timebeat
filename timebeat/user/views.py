@@ -232,10 +232,9 @@ class CategoryProductList(View):
         # print(category)
         return render(request, 'categorylist.html',{'products':products})
 class Subcategorylist(View):
-     def get(self,request,subcategory):
+    def get(self,request,subcategory):
         
-        subcategory=Subcategory.objects.get(name=subcategory)
-        print(subcategory)
+        subcategory=Subcategory.objects.filter(name=subcategory).first()
         products=Product.objects.filter(subcategory=subcategory)
         return render(request, 'subcategorylist.html',{'products':products})
 
