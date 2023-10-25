@@ -20,6 +20,7 @@
     
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.css" integrity="sha256-aa0xaJgmK/X74WM224KMQeNQC2xYKwlAt08oZqjeF0E=" crossorigin="anonymous" />
+    
   
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
@@ -327,9 +328,12 @@
                   </div>
                 </div>
               </div>
-               
+               <div>
                 <canvas id="myChart" width="400" height="100"></canvas>  
-                <canvas id="barchart" width="400" height="100"></canvas>  
+                
+               </div> 
+               <div><canvas id="revenueChart" width="400" height="200"></canvas></div>
+               
                 {% endblock index %} 
 
 
@@ -338,95 +342,31 @@
 
 
 {%block scripts%}
-                
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js" integrity="sha512-JPcRR8yFa8mmCsfrw4TNte1ZvF1e3+1SdGMslZvmrzDYxS69J7J49vkFL8u6u8PlPJK+H3voElBtUCzaXj+6ig==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
-$(document).ready(function () {
-    var ctx = document.getElementById('myChart').getContext('2d');
-    var deliveredCount = {{ delivered|length}};
-    var cancelledCount = {{ cancelled|length}};
-    var pendingCount = {{ pending|length}};
-    var myChart = new Chart(ctx, {
-        type: 'doughnut',
+  function createChart(id, chartType, labels, data, backgroundColor) {
+    new Chart(
+      document.getElementById(id),
+      {
+        type: chartType,
         data: {
-            labels: ['Delivered', 'On the way', 'Cancelled'],
-            datasets: [{
-                label: '# of Users',
-                data: [deliveredCount,cancelledCount,pendingCount], // Example values for each label
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)'
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)'
-                ],
-                borderWidth: 1
-            }]
+          labels: labels,
+          datasets: [{
+            label: 'Revenue',
+            data: data,
+            backgroundColor: backgroundColor,
+          }]
         },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
-});
+        plugins: [ChartDataLabels],
+      }
+    );
+  }
 
-
+  
+  createChart('myChart', 'bar', ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], {{monthly_data}}, 'red');
+  {% comment %} createChart('myChart', 'doughnut', ['pending', 'cancelled','delivered'], [{{pending}},{{cancelled}},{{delivered}}], ['blue','red','green']);  {% endcomment %}
 </script>
-
-<script>
-    var ctx = document.getElementById('myChart').getContext('2d');
-    var data = {
-        labels: [],
-        datasets: [
-            {
-                label: 'Monthly Revenue',
-                data: [],
-                backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                borderColor: 'rgba(255, 99, 132, 1)',
-                borderWidth: 1
-            },
-            {
-                label: 'Order Count',
-                data: [],
-                backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                borderColor: 'rgba(54, 162, 235, 1)',
-                borderWidth: 1
-            }
-        ]
-    };
-
-    var monthlyData = JSON.parse('{{ monthly_revenue|safe }}');
-    monthlyData.forEach(function(item) {
-        data.labels.push(item.month);
-        data.datasets[0].data.push(item.total_revenue);
-        data.datasets[1].data.push(item.order_count);
-    });
-
-    var options = {
-        scales: {
-            y: {
-                beginAtZero: true
-            }
-        }
-    };
-
-    var myChart = new Chart(ctx, {
-        type: 'bar',
-        data: data,
-        options: options
-    });
-</script>
-
-
-
 {%endblock scripts%}
                     
                    
@@ -487,6 +427,8 @@ $(document).ready(function () {
     
 
     <!-- Bootstrap core JavaScript-->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
     <script src="{% static '/vendor1/jquery/jquery.min.js' %}"></script>
     <script src="{% static '/vendor1/bootstrap/js/bootstrap.bundle.min.js' %}"></script>

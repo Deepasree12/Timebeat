@@ -19,13 +19,13 @@ def adminhome(request):
     customers=User.objects.filter(is_superuser=False)
     products=Product.objects.all()
     total_revenue = Order.objects.aggregate(total_revenue=Sum('final_price'))['total_revenue']
-    monthly_revenue = Order.objects.annotate(
-        month=TruncMonth('created_at')
-    ).values('month').annotate(
-        total_revenue=Sum('final_price'),
-        order_count=Count('id')
-    ).order_by('month')
-   
+    monthly_revenue = Order.objects.annotate(month=TruncMonth('created_at')).values('month').annotate(
+    total_revenue=Sum('final_price'),order_count=Count('id')).order_by('month')
+    monthly_data = []
+    for month in range(1, 13):
+        total_final_price = Order.objects.filter(created_at__year=2023, created_at__month=month).aggregate(total_final_price=Sum('final_price'))['total_final_price'] or 0
+        monthly_data.append(total_final_price)
+    print(monthly_data)    
     return render(request, 'adminhome.html', {
         'pending': pending,
         'cancelled': cancelled,
@@ -34,7 +34,9 @@ def adminhome(request):
         'customers':customers,
         'products':products,
         'total_revenue':total_revenue,
-        'monthly_revenue':monthly_revenue
+        'monthly_revenue':monthly_revenue,
+        'monthly_data':monthly_data
+        
 
     })
 class admin_user_managemnt(View):
