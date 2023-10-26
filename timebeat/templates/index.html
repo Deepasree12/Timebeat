@@ -37,21 +37,116 @@
 	<link rel="stylesheet" type="text/css" href="{% static '/css/util.css'%}">
 	<link rel="stylesheet" type="text/css" href="{% static '/css/main.css'%}">
 <!--===============================================================================================-->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
+<style>
+	body {
+		height: 100%;
+		overflow-x: hidden;
+ }
+
+ a {
+	text-decoration: none;
+}
+ .table-shopping-cart {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .table-shopping-cart th, .table-shopping-cart td {
+        padding: 10px;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .table_head th {
+        background-color: white;
+    }
+
+    .table_row:nth-child(even) {
+        background-color: white;
+    }
+
+    .table_row:nth-child(odd) {
+        background-color: #ffffff;
+    }
+
+    .column-1 {
+        width: 10%;
+    }
+
+    .column-2 {
+        width: 30%;
+        text-align: left; /* Adjust alignment for product name */
+    }
+
+    .column-3, .column-5 {
+        width: 15%;
+    }
+
+    .column-4 {
+        width: 10%;
+    }
+
+    .column-5 {
+        width: 10%;
+    }
+
+    .table_row img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    /* Center quantity controls vertically */
+    .quantity-controls {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Adjust indentation for the quantity controls */
+    .quantity-controls a {
+        margin: 0 5px; /* Adjust the margin as needed for spacing */
+    }
+/* Header CSS */
+.header-v4 {
+	
+	width: 100%;
+	z-index: 1000; /* Lower z-index for the header */
+	background: #fff;
+}
+
+/* Modal CSS */
+.modal {
+	position: fixed;
+	width: 100%;
+	z-index: 2000; /* Higher z-index for the modal */
+	/* Other modal styles */
+}
+.text-secondary {
+	color: #ccc;  /* Default star color */
+}
+
+.text-warning {
+	color: #FFD700;  /* Star color when selected (e.g., yellow) */
+}
+
+
+</style>
 <body class="animsition">
 	
-	
 	<!-- Header -->
-	<header>
+	<header class="header-v4">
 		<!-- Header desktop -->
 		<div class="container-menu-desktop">
 			<!-- Topbar -->
-			<div class="top-bar">
+			<div class="top-bar"> 
 				<div class="content-topbar flex-sb-m h-full container">
 					<div class="left-top-bar">
 						Free shipping for standard order over $100
 					</div>
-
 
 					<div class="right-top-bar flex-w h-full">
 						{% if user.is_authenticated %}
@@ -62,8 +157,6 @@
 							logout
 						</a>
 						{% else %}
-						
-
 						<a href="{% url 'signup' %}" class="flex-c-m trans-04 p-lr-25">
 							Signup
 						</a>
@@ -72,30 +165,31 @@
 							Login
 						</a>
 						{% endif %}
-					</div>
+
+					
+					</div> 
 				</div>
 			</div>
 
-			<div class="wrap-menu-desktop">
+			<div class="wrap-menu-desktop how-shadow1">
 				<nav class="limiter-menu-desktop container">
 					
 					<!-- Logo desktop -->		
 					<a href="#" class="logo">
-						<img src="{% static '/images/icons/logo-01.png'%}" alt="IMG-LOGO">
+						<img src="{% static '/images/icons/logo-01.png' %}" alt="IMG-LOGO">
 					</a>
 
 					<!-- Menu desktop -->
 					<div class="menu-desktop">
 						<ul class="main-menu">
-							<li class="active-menu">
-								<a href=" {% url 'home' %}">Home</a>
+							<li>
+								<a href="{% url 'home' %}">Home</a>
 								
 							</li>
 
-							<li>
-								<a href=" {% url 'productlist' %}">Shop</a>
+							<li class="active-menu">
+								<a href="{% url 'productlist' %}">Products</a>
 							</li>
-							
 							<li>
 								<a href=" {% url "catgoryproducts" 'Women'%}">Women</a>
 							</li>
@@ -103,11 +197,9 @@
 								<a href=" {% url "catgoryproducts" 'Men' %}">Men</a>
 							</li> 
 
-							{% comment %} <li class="label1" data-label1="hot">
-								<a href="shoping-cart.html">Deals</a>
-							</li> {% endcomment %}
-
-							
+							<li>
+								<a href="blog.html">Blog</a>
+							</li>
 
 							<li>
 								<a href="about.html">About</a>
@@ -137,12 +229,13 @@
 				</nav>
 			</div>	
 		</div>
+  </header>
 
 		<!-- Header Mobile -->
 		<div class="wrap-header-mobile">
 			<!-- Logo moblie -->		
 			<div class="logo-mobile">
-				<a href="index.html"><img src="{% static '/images/icons/logo-01.png'%}" alt="IMG-LOGO"></a>
+				<a href="index.html"><img src="{% static '/images/icons/logo-01.png' %}" alt="IMG-LOGO"></a>
 			</div>
 
 			<!-- Icon header -->
@@ -151,12 +244,11 @@
 					<i class="zmdi zmdi-search"></i>
 				</div>
 
-				<a href="{% url 'cart' %}"  class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11  js-show-cart" >
+				<div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart" data-notify="2">
 					<i class="zmdi zmdi-shopping-cart"></i>
-				</a>
+				</div>
 
-				<a href="{% url 'wishlistview' %}" class="icon-header-item cl2 trans-04 p-l-22 p-r-11 " >
-					{% comment %}  icon-header-noti {% endcomment %}
+				<a href="#" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti" data-notify="0">
 					<i class="zmdi zmdi-favorite-outline"></i>
 				</a>
 			</div>
@@ -190,20 +282,18 @@
 						</a>
 
 						<a href="#" class="flex-c-m p-lr-10 trans-04">
-							signup
+							logout
 						</a>
 
-						<a href="#" class="flex-c-m p-lr-10 trans-04">
-							login
-						</a>
+						
 					</div>
 				</li>
 			</ul>
 
 			<ul class="main-menu-m">
 				<li>
-					<a href="index.html">Home</a>
-					
+					<a href=" {% url 'home' %}">Home</a>
+				
 					<span class="arrow-main-menu-m">
 						<i class="fa fa-angle-right" aria-hidden="true"></i>
 					</span>
@@ -214,10 +304,12 @@
 				</li>
 
 				<li>
-					<a href="shoping-cart.html" class="label1 rs1" data-label1="hot">Deals</a>
+					<a href="shoping-cart.html" class="label1 rs1" data-label1="hot">Features</a>
 				</li>
 
-				
+				<li>
+					<a href="blog.html">Blog</a>
+				</li>
 
 				<li>
 					<a href="about.html">About</a>
@@ -228,27 +320,26 @@
 				</li>
 			</ul>
 		</div>
+	<!-- Modal Search -->
+	<div class="modal-search-header flex-c-m trans-04 js-hide-modal-search">
+		<div class="container-search-header">
+			<button class="flex-c-m btn-hide-modal-search trans-04 js-hide-modal-search">
+				<img src="{% static '/images/icons/icon-close2.png' %}" alt="CLOSE">
+			</button>
 
-		<!-- Modal Search -->
-		<div class="modal-search-header flex-c-m trans-04 js-hide-modal-search">
-			<div class="container-search-header">
-				<button class="flex-c-m btn-hide-modal-search trans-04 js-hide-modal-search">
-					<img src="{% static '/images/icons/icon-close2.png'%}" alt="CLOSE">
+			<form class="wrap-search-header flex-w p-l-15">
+				<button class="flex-c-m trans-04">
+					<i class="zmdi zmdi-search"></i>
 				</button>
-
-				<form class="wrap-search-header flex-w p-l-15">
-					<button class="flex-c-m trans-04">
-						<i class="zmdi zmdi-search"></i>
-					</button>
-					<input class="plh3" type="text" name="search" placeholder="Search...">
-				</form>
-			</div>
+				<input class="plh3" type="text" name="search" placeholder="Search...">
+			</form>
 		</div>
-	</header>
-
-	
+	</div>
+</header>
 		
-
+	{% block base %} 
+	
+	
 	<!-- Slider -->
 	<section class="section-slide">
 		<div class="wrap-slick1">
@@ -312,32 +403,14 @@
 					<div class="background-image">
 				<img src="{% static 'images/2000x886-rado.webp' style="width:30%"%}" alt="IMG-BANNER">
 					</div>
-					{% comment %} <div class="container h-full">
-						<div class="flex-col-l-m h-full p-t-100 p-b-30 respon5">
-							<div class="layer-slick1 animated visible-false" data-appear="rotateInDownLeft" data-delay="0">
-								<span class="ltext-101 cl2 respon2">
-									Men Collection
-								</span>
-							</div>
-								
-							<div class="layer-slick1 animated visible-false" data-appear="rotateInUpRight" data-delay="800">
-								<h2 class="ltext-201 cl2 p-t-19 p-b-43 respon1">
-									New arrivals
-								</h2>
-							</div>
-								
-							<div class="layer-slick1 animated visible-false" data-appear="rotateIn" data-delay="1600">
-								<a href="product.html" class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04">
-									Shop Now
-								</a>
-							</div> {% endcomment %}
+					
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</section>
-
+	
 <!-- Banner -->
 <div class="sec-banner bg0 p-t-80 p-b-50">
 	<div class="container">
@@ -432,34 +505,9 @@
 					<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 how-active1" data-filter="*">
 						All Products
 					</button>
-
-					{% comment %} <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".women">
-						Women
-					</button>
-
-					<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".men">
-						Men
-					</button>
-
-					
-					<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".watches">
-						Watches
-					</button> {% endcomment %}
 				</div>
 
-				{% comment %} <div class="flex-w flex-c-m m-tb-10">
-					<div class="flex-c-m stext-106 cl6 size-104 bor4 pointer hov-btn3 trans-04 m-r-8 m-tb-4 js-show-filter">
-						<i class="icon-filter cl2 m-r-6 fs-15 trans-04 zmdi zmdi-filter-list"></i>
-						<i class="icon-close-filter cl2 m-r-6 fs-15 trans-04 zmdi zmdi-close dis-none"></i>
-						 Filter
-					</div>
-
-					<div class="flex-c-m stext-106 cl6 size-105 bor4 pointer hov-btn3 trans-04 m-tb-4 js-show-search">
-						<i class="icon-search cl2 m-r-6 fs-15 trans-04 zmdi zmdi-search"></i>
-						<i class="icon-close-search cl2 m-r-6 fs-15 trans-04 zmdi zmdi-close dis-none"></i>
-						Search
-					</div>
-				</div> {% endcomment %}
+				
 				
 				<!-- Search product -->
 				<div class="dis-none panel-search w-full p-t-10 p-b-15">
@@ -472,195 +520,14 @@
 					</div>	
 				</div>
 
-				<!-- Filter -->
+			<!-- Filter -->
 				<div class="dis-none panel-filter w-full p-t-10">
 					<div class="wrap-filter flex-w bg6 w-full p-lr-40 p-t-27 p-lr-15-sm">
-						<div class="filter-col1 p-r-15 p-b-27">
-							<div class="mtext-102 cl2 p-b-15">
-								Sort By
-							</div>
-
-							<ul>
-								<li class="p-b-6">
-									<a href="#" class="filter-link stext-106 trans-04">
-										Default
-									</a>
-								</li>
-
-								<li class="p-b-6">
-									<a href="#" class="filter-link stext-106 trans-04">
-										Popularity
-									</a>
-								</li>
-
-								<li class="p-b-6">
-									<a href="#" class="filter-link stext-106 trans-04">
-										Average rating
-									</a>
-								</li>
-
-								<li class="p-b-6">
-									<a href="#" class="filter-link stext-106 trans-04 filter-link-active">
-										Newness
-									</a>
-								</li>
-
-								<li class="p-b-6">
-									<a href="#" class="filter-link stext-106 trans-04">
-										Price: Low to High
-									</a>
-								</li>
-
-								<li class="p-b-6">
-									<a href="#" class="filter-link stext-106 trans-04">
-										Price: High to Low
-									</a>
-								</li>
-							</ul>
-						</div>
-
-						<div class="filter-col2 p-r-15 p-b-27">
-							<div class="mtext-102 cl2 p-b-15">
-								Price
-							</div>
-
-							<ul>
-								<li class="p-b-6">
-									<a href="#" class="filter-link stext-106 trans-04 filter-link-active">
-										All
-									</a>
-								</li>
-
-								<li class="p-b-6">
-									<a href="#" class="filter-link stext-106 trans-04">
-										$0.00 - $50.00
-									</a>
-								</li>
-
-								<li class="p-b-6">
-									<a href="#" class="filter-link stext-106 trans-04">
-										$50.00 - $100.00
-									</a>
-								</li>
-
-								<li class="p-b-6">
-									<a href="#" class="filter-link stext-106 trans-04">
-										$100.00 - $150.00
-									</a>
-								</li>
-
-								<li class="p-b-6">
-									<a href="#" class="filter-link stext-106 trans-04">
-										$150.00 - $200.00
-									</a>
-								</li>
-
-								<li class="p-b-6">
-									<a href="#" class="filter-link stext-106 trans-04">
-										$200.00+
-									</a>
-								</li>
-							</ul>
-						</div>
-
-						<div class="filter-col3 p-r-15 p-b-27">
-							<div class="mtext-102 cl2 p-b-15">
-								Color
-							</div>
-
-							<ul>
-								<li class="p-b-6">
-									<span class="fs-15 lh-12 m-r-6" style="color: #222;">
-										<i class="zmdi zmdi-circle"></i>
-									</span>
-
-									<a href="#" class="filter-link stext-106 trans-04">
-										Black
-									</a>
-								</li>
-
-								<li class="p-b-6">
-									<span class="fs-15 lh-12 m-r-6" style="color: #4272d7;">
-										<i class="zmdi zmdi-circle"></i>
-									</span>
-
-									<a href="#" class="filter-link stext-106 trans-04 filter-link-active">
-										Blue
-									</a>
-								</li>
-
-								<li class="p-b-6">
-									<span class="fs-15 lh-12 m-r-6" style="color: #b3b3b3;">
-										<i class="zmdi zmdi-circle"></i>
-									</span>
-
-									<a href="#" class="filter-link stext-106 trans-04">
-										Grey
-									</a>
-								</li>
-
-								<li class="p-b-6">
-									<span class="fs-15 lh-12 m-r-6" style="color: #00ad5f;">
-										<i class="zmdi zmdi-circle"></i>
-									</span>
-
-									<a href="#" class="filter-link stext-106 trans-04">
-										Green
-									</a>
-								</li>
-
-								<li class="p-b-6">
-									<span class="fs-15 lh-12 m-r-6" style="color: #fa4251;">
-										<i class="zmdi zmdi-circle"></i>
-									</span>
-
-									<a href="#" class="filter-link stext-106 trans-04">
-										Red
-									</a>
-								</li>
-
-								<li class="p-b-6">
-									<span class="fs-15 lh-12 m-r-6" style="color: #aaa;">
-										<i class="zmdi zmdi-circle-o"></i>
-									</span>
-
-									<a href="#" class="filter-link stext-106 trans-04">
-										White
-									</a>
-								</li>
-							</ul>
-						</div>
-
-						<div class="filter-col4 p-b-27">
-							<div class="mtext-102 cl2 p-b-15">
-								Tags
-							</div>
-
-							<div class="flex-w p-t-4 m-r--5">
-								<a href="#" class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5">
-									Fashion
-								</a>
-
-								<a href="#" class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5">
-									Lifestyle
-								</a>
-
-								<a href="#" class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5">
-									Denim
-								</a>
-
-								<a href="#" class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5">
-									Streetstyle
-								</a>
-
-								<a href="#" class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5">
-									Crafts
-								</a>
-							</div>
+						
 						</div>
 					</div>
 				</div>
-			</div>
+			</div> 
 
 			<div class="row isotope-grid">
 				{% for product in products %}
@@ -715,189 +582,169 @@
 			</div>
 		</div>
 	</section>
+	{% endblock base %} 
 
-
-	<!-- Footer -->
-	<footer class="bg3 p-t-75 p-b-32">
-		<div class="container">
-			<div class="row">
-				<div class="col-sm-6 col-lg-3 p-b-50">
-					<h4 class="stext-301 cl0 p-b-30">
-						Categories
-					</h4>
-
-					<ul>
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								Women
-							</a>
-						</li>
-
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								Men
-							</a>
-						</li>
-
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								Shoes
-							</a>
-						</li>
-
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								Watches
-							</a>
-						</li>
-					</ul>
-				</div>
-
-				<div class="col-sm-6 col-lg-3 p-b-50">
-					<h4 class="stext-301 cl0 p-b-30">
-						Help
-					</h4>
-
-					<ul>
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								Track Order
-							</a>
-						</li>
-
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								Returns 
-							</a>
-						</li>
-
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								Shipping
-							</a>
-						</li>
-
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								FAQs
-							</a>
-						</li>
-					</ul>
-				</div>
-
-				<div class="col-sm-6 col-lg-3 p-b-50">
-					<h4 class="stext-301 cl0 p-b-30">
-						GET IN TOUCH
-					</h4>
-
-					<p class="stext-107 cl7 size-201">
-						Any questions? Let us know in store at 8th floor, 379 Hudson St, New York, NY 10018 or call us on (+1) 96 716 6879
-					</p>
-
-					<div class="p-t-27">
-						<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
-							<i class="fa fa-facebook"></i>
-						</a>
-
-						<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
-							<i class="fa fa-instagram"></i>
-						</a>
-
-						<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
-							<i class="fa fa-pinterest-p"></i>
-						</a>
-					</div>
-				</div>
-
-				<div class="col-sm-6 col-lg-3 p-b-50">
-					<h4 class="stext-301 cl0 p-b-30">
-						Newsletter
-					</h4>
-
-					<form>
-						<div class="wrap-input1 w-full p-b-4">
-							<input class="input1 bg-none plh1 stext-107 cl7" type="text" name="email" placeholder="timebeat@example.com">
-							<div class="focus-input1 trans-04"></div>
-						</div>
-
-						<div class="p-t-18">
-							<button class="flex-c-m stext-101 cl0 size-103 bg1 bor1 hov-btn2 p-lr-15 trans-04">
-								Subscribe
-							</button>
-						</div>
-					</form>
-				</div>
-			</div>
-
-			<div class="p-t-40">
-				<div class="flex-c-m flex-w p-b-18">
-					<a href="#" class="m-all-1">
-						<img src="{% static '/images/icons/icon-pay-01.png'%}" alt="ICON-PAY">
-					</a>
-
-					<a href="#" class="m-all-1">
-						<img src="{% static '/images/icons/icon-pay-02.png'%}" alt="ICON-PAY">
-					</a>
-
-					<a href="#" class="m-all-1">
-						<img src="{% static '/images/icons/icon-pay-03.png'%}" alt="ICON-PAY">
-					</a>
-
-					<a href="#" class="m-all-1">
-						<img src="{% static '/images/icons/icon-pay-04.png'%}" alt="ICON-PAY">
-					</a>
-
-					<a href="#" class="m-all-1">
-						<img src="{% static '/images/icons/icon-pay-05.png'%}" alt="ICON-PAY">
-					</a>
-				</div>
-
-				<p class="stext-107 cl6 txt-center">
-					<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | Made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a> &amp; distributed by <a href="https://themewagon.com" target="_blank">ThemeWagon</a>
-<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-
-				</p>
-			</div>
-		</div>
-	</footer>
-
-
-	<!-- Back to top -->
-	<div class="btn-back-to-top" id="myBtn">
-		<span class="symbol-btn-back-to-top">
-			<i class="zmdi zmdi-chevron-up"></i>
-		</span>
-	</div>
-
+		<!-- Footer -->
+		<footer class="bg3 p-t-75 p-b-32">
+			<div class="container">
+				<div class="row">
+					<div class="col-sm-6 col-lg-3 p-b-50">
+						<h4 class="stext-301 cl0 p-b-30">
+							Categories
+						</h4>
 	
-
-							<!--  -->
-							<div class="flex-w flex-m p-l-100 p-t-40 respon7">
-								<div class="flex-m bor9 p-r-10 m-r-11">
-									<a href="#" class="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 js-addwish-detail tooltip100" data-tooltip="Add to Wishlist">
-										<i class="zmdi zmdi-favorite"></i>
-									</a>
-								</div>
-
-								<a href="#" class="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 m-r-8 tooltip100" data-tooltip="Facebook">
-									<i class="fa fa-facebook"></i>
+						<ul>
+							<li class="p-b-10">
+								<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+									Women
 								</a>
-
-								<a href="#" class="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 m-r-8 tooltip100" data-tooltip="Twitter">
-									<i class="fa fa-twitter"></i>
+							</li>
+	
+							<li class="p-b-10">
+								<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+									Men
 								</a>
-
-								<a href="#" class="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 m-r-8 tooltip100" data-tooltip="Google Plus">
-									<i class="fa fa-google-plus"></i>
+							</li>
+	
+							
+	
+							<li class="p-b-10">
+								<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+									Watches
 								</a>
-							</div>
+							</li>
+						</ul>
+					</div>
+	
+					<div class="col-sm-6 col-lg-3 p-b-50">
+						<h4 class="stext-301 cl0 p-b-30">
+							Help
+						</h4>
+	
+						<ul>
+							<li class="p-b-10">
+								<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+									Track Order
+								</a>
+							</li>
+	
+							<li class="p-b-10">
+								<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+									Returns 
+								</a>
+							</li>
+	
+							<li class="p-b-10">
+								<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+									Shipping
+								</a>
+							</li>
+	
+							<li class="p-b-10">
+								<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+									FAQs
+								</a>
+							</li>
+						</ul>
+					</div>
+	
+					<div class="col-sm-6 col-lg-3 p-b-50">
+						<h4 class="stext-301 cl0 p-b-30">
+							GET IN TOUCH
+						</h4>
+	
+						<p class="stext-107 cl7 size-201">
+							Any questions? Let us know in store at 8th floor, 379 Hudson St, New York, NY 10018 or call us on (+1) 96 716 6879
+						</p>
+	
+						<div class="p-t-27">
+							<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
+								<i class="fa fa-facebook"></i>
+							</a>
+	
+							<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
+								<i class="fa fa-instagram"></i>
+							</a>
+	
+							<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
+								<i class="fa fa-pinterest-p"></i>
+							</a>
 						</div>
 					</div>
+	
+					<div class="col-sm-6 col-lg-3 p-b-50">
+						<h4 class="stext-301 cl0 p-b-30">
+							Newsletter
+						</h4>
+	
+						<form>
+							<div class="wrap-input1 w-full p-b-4">
+								<input class="input1 bg-none plh1 stext-107 cl7" type="text" name="email" placeholder="email@example.com">
+								<div class="focus-input1 trans-04"></div>
+							</div>
+	
+							<div class="p-t-18">
+								<button class="flex-c-m stext-101 cl0 size-103 bg1 bor1 hov-btn2 p-lr-15 trans-04">
+									Subscribe
+								</button>
+							</div>
+						</form>
+					</div>
+				</div>
+	
+				<div class="p-t-40">
+					<div class="flex-c-m flex-w p-b-18">
+						<a href="#" class="m-all-1">
+							<img src="{% static '/images/icons/icon-pay-01.png' %}"  alt="ICON-PAY">
+						</a>
+	
+						<a href="#" class="m-all-1">
+							<img src="{% static '/images/icons/icon-pay-02.png' %}" alt="ICON-PAY">
+						</a>
+	
+						<a href="#" class="m-all-1">
+							<img src="{% static '/images/icons/icon-pay-03.png' %}" alt="ICON-PAY">
+						</a>
+	
+						<a href="#" class="m-all-1">
+							<img src="{% static '/images/icons/icon-pay-04.png' %}" alt="ICON-PAY">
+						</a>
+	
+						<a href="#" class="m-all-1">
+							<img src="{% static '/images/icons/icon-pay-05.png' %}" alt="ICON-PAY">
+						</a>
+					</div>
+	
+					<p class="stext-107 cl6 txt-center">
+						<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+	Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | Made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a> &amp; distributed by <a href="https://themewagon.com" target="_blank">ThemeWagon</a>
+	<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+	
+					</p>
 				</div>
 			</div>
+		</footer>
+	
+	
+		<!-- Back to top -->
+		<div class="btn-back-to-top" id="myBtn">
+			<span class="symbol-btn-back-to-top">
+				<i class="zmdi zmdi-chevron-up"></i>
+			</span>
 		</div>
-	</div>
+		
+		
+	
+	<!--===============================================================================================-->	
+		<script src="{% static '/vendor/jquery/jquery-3.2.1.min.js' %}" ></script>
+	<!--===============================================================================================-->
+		<script src="{% static '/vendor/animsition/js/animsition.min.js' %}"></script>
+	<!--===============================================================================================-->
+		<script src="{% static '/vendor/bootstrap/js/popper.js' %}"></script>
+		<script src="{% static '/vendor/bootstrap/js/bootstrap.min.js' %}"></script>
+	<!--===============================================================================================-->
+	
+	
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	{% for message in messages %}
 		<script>
@@ -1013,6 +860,9 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 	</script>
 <!--===============================================================================================-->
 	<script src="{% static '/js/main.js'%}"></script>
-
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+	
+	<script src="{% static '/js/checkout.js' %}"></script>
+	
 </body>
 </html>
