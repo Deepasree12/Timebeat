@@ -165,8 +165,6 @@ class productlist(View):
        
         brand_filter = request.GET.getlist('brand_items')
         color_filter = request.GET.getlist('color_items')
-        min_limit=request.GET.get('min')
-        max_limit=request.GET.get('max')
         page_number=request.GET.get('page')
         products=Product.objects.all()
         variant=Variant.objects.all()
@@ -205,14 +203,10 @@ class productlist(View):
                 
         if new_arrivals == 'new_arrivals':
             variants.sort(key=lambda x:x.product.created_at)
-        else: 
-            products = Product.objects.order_by('-created_at')[:10]  # Get the top 10 most recently added products
-            variants = [product.variants.order_by('-created_at').first() for product in products]
-        # if min_limit and max_limit:
-        #     if max_limit == '10000':
-        #         variants = [variant for variant in variants if min_limit and int(min_limit) < variant.selling_price]
-        #     else:
-        #         variants = [variant for variant in variants if min_limit and max_limit and int(min_limit) < variant.selling_price < int(max_limit)]
+        # else: 
+        #     products = Product.objects.order_by('-created_at')[:10]  
+        #     variants = [product.variants.order_by('-created_at').first() for product in products]
+        
         context = {
         'products': products,
         'variants': variants,
@@ -223,7 +217,7 @@ class productlist(View):
         
         return render(request,'productlist.html',{"page":page,"brands":brands,"colors":colors,'brand_filter':brand_filter, 'color_filter':color_filter,
         'context':context  })
-    
+     
 class CategoryProductList(View):
     def get(self,request,category):
         

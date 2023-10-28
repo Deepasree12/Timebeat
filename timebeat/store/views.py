@@ -8,6 +8,11 @@ from datetime import date
 from django.db.models.functions import TruncMonth
 from django.views import View
 from cart.models import * 
+from django.contrib import messages
+from django.contrib.auth import login, authenticate,logout
+
+
+
 
 
 
@@ -55,13 +60,30 @@ class UserAccess(View):
         return redirect(request.META.get('HTTP_REFERER'))
 
     
-def adminsignup(request):
-    return render(request,'adminsignup.html')
-
+class AdminLogin(View):
+    def get(self,request):
+      
+      return render(request,'adminlogin.html') 
+    def post(self, request):
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        
+        
+        if email == 'admin@gmail.com' and password == '123':
+            
+            admin = authenticate(request, email=email, password=password)
+            if admin is not None:
+                login(request, admin)
+                
+                return redirect('adminhome')
+        else:
+            
+            messages.warning(request, 'Invalid email or password')
+            return render(request, 'adminlogin.html')
 class AdminLogout(View):
     def get(self,request):
         logout(request)  
-        return redirect('adminhome')
+        return redirect('adminlogin')
 
 
 class Category_view(View):
