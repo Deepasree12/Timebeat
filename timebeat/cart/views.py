@@ -87,8 +87,9 @@ def increment_cart(request, pk):
     if request.user.is_authenticated:
         
         cart_items = CartItem.objects.get(product_variant_id=pk)
-        cart_items.count += 1
-        cart_items.save()
+        if cart_items.count  < 10:
+            cart_items.count += 1
+            cart_items.save()
         return redirect(request.META.get('HTTP_REFERER'))
     else:
         cart = request.session.get('cart_id', {})

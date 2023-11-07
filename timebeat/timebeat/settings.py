@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     
     
+    
 ]
 
 
@@ -89,7 +90,7 @@ GOOGLE_CLIENT_SECRET="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"
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
-]
+] 
 SOCIALACCOUNT_PROVIDERS = {
     "google": {
         "APP": {
