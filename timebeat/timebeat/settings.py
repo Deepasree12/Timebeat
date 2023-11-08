@@ -24,9 +24,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-h3e*y=qfojim-p1$gxxfv09r%5dh5-^*(qch7dz@)hl3+32dxn'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['51.20.63.76','0.0.0.0']
 
 
 # Application definition
@@ -134,10 +134,10 @@ WSGI_APPLICATION = 'timebeat.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'TimeBeatOne',
+        'NAME': 'timebeatdb',
         'USER': 'postgres',
-        'PASSWORD': 'ima123',
-        'HOST': 'localhost',  # Typically 'localhost' or '127.0.0.1'
+        'PASSWORD': 'deepasree',
+        'HOST': 'timebeatdb.cqid5bng1ggi.eu-north-1.rds.amazonaws.com',  # Typically 'localhost' or '127.0.0.1'
         'PORT': '5432', 
     }
 }
