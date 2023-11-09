@@ -10,11 +10,14 @@ from django.views import View
 from cart.models import * 
 from django.contrib import messages
 from django.contrib.auth import login, authenticate,logout
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
 
 
 
-
-
+def upload_to_s3(file_name, file_content):
+    file_path = f'static/{file_name}'  # Specify the desired folder structure in your bucket
+    default_storage.save(file_path, ContentFile(file_content))
 
 def adminhome(request):
     cancelled = OrderItem.objects.filter(status='Cancelled')
