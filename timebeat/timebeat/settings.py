@@ -12,22 +12,31 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
 
+
+load_dotenv()  # loads the configs from .env
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+
+#cloudinary imports
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-h3e*y=qfojim-p1$gxxfv09r%5dh5-^*(qch7dz@)hl3+32dxn'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['51.20.63.76','0.0.0.0']
-
+ALLOWED_HOSTS = ['51.20.63.76','0.0.0.0', '127.0.0.1']
+# ALLOWED_HOSTS = []
 
 # Application definition
 
@@ -47,7 +56,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
-    
+    'cloudinary',
     
     
 ]
@@ -84,8 +93,8 @@ TEMPLATES = [
         },
     },
 ]
-GOOGLE_CLIENT_ID="569089977695-jq6e2h3n9i3j9t7m7v76h0nh80vm4muu.apps.googleusercontent.com"
-GOOGLE_CLIENT_SECRET="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"
+GOOGLE_CLIENT_ID= os.environ.get('GOOGLE_CLIENT_ID')
+GOOGLE_CLIENT_SECRET=os.environ.get('GOOGLE_CLIENT_SECRET')
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
@@ -94,8 +103,8 @@ AUTHENTICATION_BACKENDS = [
 SOCIALACCOUNT_PROVIDERS = {
     "google": {
         "APP": {
-            "client_id": '569089977695-jq6e2h3n9i3j9t7m7v76h0nh80vm4muu.apps.googleusercontent.com',
-            "secret": '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',
+            "client_id": os.environ.get('GOOGLE_PROVIDER_CLIENT_ID'),
+            "secret": os.environ.get('GOOGLE_PROVIDER_CLIENT_SECRET'),
         },
         "SCOPE": [
             "profile",
@@ -134,16 +143,16 @@ WSGI_APPLICATION = 'timebeat.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'timebeatdb',
-        'USER': 'postgres',
-        'PASSWORD': 'deepasree',
-        'HOST': 'timebeatdb.cqid5bng1ggi.eu-north-1.rds.amazonaws.com',  # Typically 'localhost' or '127.0.0.1'
+        'NAME': os.environ.get('DATABASE_NAME'),
+        'USER': os.environ.get('DATABASE_USER'),
+        'PASSWORD': os.environ.get('DATABASE_PASSWORD'),
+        'HOST': os.environ.get('DATABASE_HOST'), # Typically 'localhost' or '127.0.0.1'
         'PORT': '5432', 
+        # DATABASE_HOST=timebeatdb.cqid5bng1ggi.eu-north-1.rds.amazonaws.com
     }
 }
-RAZOR_KEY_ID = 'rzp_test_8tTqQg8LQil3JX'
-RAZOR_KEY_SECRET ='VRrIR287Z3zxo1Kp4ZPzamte'
-
+RAZOR_KEY_ID = os.environ.get('RAZOR_KEY_ID'),
+RAZOR_KEY_SECRET =os.environ.get('RAZOR_KEY_SECRET'),
 AUTH_USER_MODEL = 'user.User'
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -181,7 +190,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-
+STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles')
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR,'media')
@@ -199,16 +208,16 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER ='Timebeat2023@gmail.com'
-EMAIL_HOST_PASSWORD = 'iczoxzyopyfcpale'
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 
 
-AWS_ACCESS_KEY_ID = 'AKIATWL3R6G54ZREIGZ2'
-AWS_SECRET_ACCESS_KEY = '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'
-AWS_STORAGE_BUCKET_NAME = 'timebeatbucket'
-AWS_S3_SIGNATURE_NAME = 's3v4'
-AWS_S3_REGION_NAME = 'ap-south-1'
-AWS_S3_FILE_OVERWRITE = False
-AWS_DEFAULT_ACL = None
-AWS_S3_VERITY = True
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+# AWS_ACCESS_KEY_ID = 'AKIATWL3R6G54ZREIGZ2'
+# AWS_SECRET_ACCESS_KEY = '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'
+# AWS_STORAGE_BUCKET_NAME = 'timebeatbucket'
+# AWS_S3_SIGNATURE_NAME = 's3v4'
+# AWS_S3_REGION_NAME = 'ap-south-1'
+# AWS_S3_FILE_OVERWRITE = False
+# AWS_DEFAULT_ACL = None
+# AWS_S3_VERITY = True
+# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
