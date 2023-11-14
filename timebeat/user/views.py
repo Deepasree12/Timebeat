@@ -20,7 +20,7 @@ from django.db.models import Q
 from django.core.paginator import Paginator
 from datetime import datetime, timedelta
 import razorpay
-from timebeat.settings import RAZOR_KEY_ID,RAZOR_KEY_SECRET
+from timebeat.settings import RAZORPAY_API_KEY,RAZORPAY_API_SECRET
 from django.http import JsonResponse
 from django.template.loader import get_template
 from xhtml2pdf import pisa
@@ -30,6 +30,7 @@ from .email import *
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.urls import reverse
 from django.shortcuts import render,redirect,get_object_or_404
+
 class index(View):
     def get(self,request):
         category=Category.objects.all()
@@ -327,17 +328,17 @@ class Checkout(View):
         user_cart = request.user.cart
         cart_items = CartItem.objects.filter(cart=user_cart)
 
-        current_user = User.objects.filter(email=request.user.email).values('name', 'email').first()
-        client = razorpay.Client(auth=(RAZOR_KEY_ID,RAZOR_KEY_SECRET))
-        payment = client.order.create(dict(amount=request.user.cart.final_price*100,currency="INR",payment_capture=1))
-        payment_order_id=payment['id']
+        
+        client = razorpay.Client(auth=(RAZORPAY_API_KEY,RAZORPAY_API_SECRET))
+        payment_order = client.order.create(dict(amount = request.user.cart.final_price*100, currency = "INR", payment_capture = 1))
+        payment_order_id = payment_order['id']
         return render(request, 'checkout.html', {
-            'current_user': current_user,
+            # 'current_user': current_user,
             'user_data': user_data,
             'cart':user_cart,
             'cart_items': cart_items,
             'coupons':coupon,
-            'payment_API_key':RAZOR_KEY_ID,
+            'payment_API_key':RAZORPAY_API_KEY,
             'oder_id':payment_order_id
         })
 

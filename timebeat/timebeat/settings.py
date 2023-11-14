@@ -33,9 +33,9 @@ import cloudinary.api
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['51.20.63.76','0.0.0.0', '127.0.0.1']
+ALLOWED_HOSTS = ['52.66.237.225','0.0.0.0', '127.0.0.1']
 # ALLOWED_HOSTS = []
 
 # Application definition
@@ -151,8 +151,8 @@ DATABASES = {
         # DATABASE_HOST=timebeatdb.cqid5bng1ggi.eu-north-1.rds.amazonaws.com
     }
 }
-RAZOR_KEY_ID = os.environ.get('RAZOR_KEY_ID'),
-RAZOR_KEY_SECRET =os.environ.get('RAZOR_KEY_SECRET'),
+RAZORPAY_API_KEY = os.environ.get('RAZOR_KEY_ID')
+RAZORPAY_API_SECRET =os.environ.get('RAZOR_KEY_SECRET')
 AUTH_USER_MODEL = 'user.User'
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
