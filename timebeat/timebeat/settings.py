@@ -33,9 +33,9 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['52.66.237.225','0.0.0.0', '127.0.0.1']
-CSRF_TRUSTED_ORIGINS=['http://52.66.237.225']
-
+ALLOWED_HOSTS = ['timebeat.shop', 'www.timebeat.shop', '52.66.237.225', 'localhost', '127.0.0.1','0.0.0.0']
+CSRF_TRUSTED_ORIGINS=['https://52.66.237.225','https://timebeat.shop']
+SECURE_SSL_REDIRECT = True
 # ALLOWED_HOSTS = []
 
 # Application definition
@@ -191,7 +191,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'staticfiles')]
-STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles')
+STATIC_ROOT = os.path.join(BASE_DIR,'static')
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR,'media')
