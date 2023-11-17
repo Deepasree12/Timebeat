@@ -175,10 +175,9 @@
 				<nav class="limiter-menu-desktop container">
 					
 					<!-- Logo desktop -->		
-					<a href="#" class="logo">
-						<img src="{% static '/images/icons/logo-01.png' %}" alt="IMG-LOGO">
-					</a>
-
+					
+					<h2>TIME</h2>
+					<h2 style="font-weight: 300;">BEAT</h2>
 					<!-- Menu desktop -->
 					<div class="menu-desktop">
 						<ul class="main-menu">
@@ -532,21 +531,19 @@
 			<div class="row isotope-grid">
 				{% for product in products %}
 				{% if product.variants.all %}
-				<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women">
+				<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women ">
 					<!-- Block2 -->
 
 					<div class="block2">
-						<div class="block2-pic hov-img0">
+						<div class="block2-pic hov-img0 border shadow  p-3">
 							<img src="{{ product.variants.first.mainimage.url }}" alt="IMG-PRODUCT"> 
 
-							<a href="{% url 'productlist' %}" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1">
-								Quick View
-							</a>
+							
 						</div>
 
 						<div class="block2-txt flex-w flex-t p-t-14">
 							<div class="block2-txt-child1 flex-col-l ">
-								<a href="product-detail.html" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
+								<a class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
 									{{  product.name}}
 								</a>
 
@@ -628,12 +625,7 @@
 								</a>
 							</li>
 	
-							<li class="p-b-10">
-								<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-									Returns 
-								</a>
-							</li>
-	
+							
 							<li class="p-b-10">
 								<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
 									Shipping
@@ -654,7 +646,7 @@
 						</h4>
 	
 						<p class="stext-107 cl7 size-201">
-							Any questions? Let us know in store at 8th floor, 379 Hudson St, New York, NY 10018 or call us on (+1) 96 716 6879
+							Any questions? Let us know in store at 8th floor, 379 Hudson call +91000000
 						</p>
 	
 						<div class="p-t-27">
@@ -717,7 +709,7 @@
 	
 					<p class="stext-107 cl6 txt-center">
 						<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-	Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | Made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a> &amp; distributed by <a href="https://themewagon.com" target="_blank">ThemeWagon</a>
+	Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | Made with <i class="fa fa-heart-o" aria-hidden="true"></i> by Deepasree A 
 	<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
 	
 					</p>
@@ -864,7 +856,7 @@
 	
 	{% comment %} <script src="{% static '/js/checkout.js' %}"></script> {% endcomment %}
 	<div class="fixed-bottom d-flex justify-content-center bg-dark px-5">
-    <div class="text-light text-opacity-75">This website is Created By Deepasree A
+    <div class="text-light text-opacity-75">This website is Created By DeepasreeA
       <a href="https://github.com/Deepasree12" class="text-light"><i class="bi bi-github"></i></a>
       <a href="https://www.linkedin.com/in/deepasree-a-228800b9/" class="text-light"><i class="bi bi-linkedin"></i></a>
 

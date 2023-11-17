@@ -34,7 +34,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 DEBUG = True
 
 ALLOWED_HOSTS = ['timebeat.shop', 'www.timebeat.shop', '52.66.237.225', 'localhost', '127.0.0.1','0.0.0.0']
-CSRF_TRUSTED_ORIGINS=['http://52.66.237.225']
+CSRF_TRUSTED_ORIGINS=['http://52.66.237.225','https://timebeat.shop']
 
 # ALLOWED_HOSTS = []
 
