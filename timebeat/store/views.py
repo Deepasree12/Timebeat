@@ -20,6 +20,8 @@ def upload_to_s3(file_name, file_content):
     default_storage.save(file_path, ContentFile(file_content))
 
 def adminhome(request):
+    if  not request.user.is_authenticated:
+        return redirect('adminlogin')
     cancelled = OrderItem.objects.filter(status='Cancelled')
     delivered = OrderItem.objects.filter(status='Delivered')
     pending = OrderItem.objects.filter(status='on the way')
@@ -49,11 +51,15 @@ def adminhome(request):
     })
 class admin_user_managemnt(View):
     def get(self,request):
+        if  not request.user.is_authenticated:
+            return redirect('adminlogin')
         users=User.objects.filter(is_superuser=False)
         return render(request, 'adminusers.html', {'users': users}
                       )
 class UserAccess(View):
     def get(self,request,pk):
+        if  not request.user.is_authenticated:
+            return redirect('adminlogin')
         user=User.objects.get(id=pk)
         if user.is_active == True:
             user.is_active=False
@@ -92,6 +98,8 @@ class AdminLogout(View):
 class Category_view(View):
 
     def get(self, request):
+        if  not request.user.is_authenticated:
+            return redirect('adminlogin')
         data=Category.objects.all()
         return render(request, 'category.html',{'data':data})
 
@@ -106,7 +114,8 @@ class Category_view(View):
 
 class Subcategory_view(View):
     def get(self,request): 
-        
+        if  not request.user.is_authenticated:
+            return redirect('adminlogin')
         p_category = Category.objects.all()
         return render(request, 'subcategory.html',{'p_category':p_category})
 
@@ -128,6 +137,8 @@ class Subcategory_view(View):
 
 class subview(View):
     def get(self,request):
+        if  not request.user.is_authenticated:
+            return redirect('adminlogin')
         data=Subcategory.objects.all()
         return render(request, 'subcatlist.html', {'data': data})
 
@@ -135,6 +146,8 @@ class subview(View):
 class Brand_view(View):
 
     def get(self, request):
+        if  not request.user.is_authenticated:
+            return redirect('adminlogin')
         data=Brand.objects.all()
         return render(request, 'brand.html',{'data':data})
 
@@ -150,13 +163,14 @@ class Brand_view(View):
 
 class product_view(View):
     def get(self,request): 
-        
-       data=Category.objects.all()
-       subdata=Subcategory.objects.all()
-       brand=Brand.objects.all()
-       product=Product.objects.all()
+        if  not request.user.is_authenticated:
+            return redirect('adminlogin')
+        data=Category.objects.all()
+        subdata=Subcategory.objects.all()
+        brand=Brand.objects.all()
+        product=Product.objects.all()
        
-       return render(request, 'productsview.html',{'data':data,'p_subcategory':subdata,'brand':brand,'product':product,})
+        return render(request, 'productsview.html',{'data':data,'p_subcategory':subdata,'brand':brand,'product':product,})
        
        
    
@@ -184,6 +198,8 @@ class product_view(View):
 class Color_view(View):
 
     def get(self, request):
+        if  not request.user.is_authenticated:
+            return redirect('adminlogin')
         data=Color.objects.all()
         return render(request, 'color.html',{'data':data})
 
@@ -195,7 +211,8 @@ class Color_view(View):
     
 class Varient_view(View):
     def get(self,request,pk):
-        
+        if  not request.user.is_authenticated:
+            return redirect('adminlogin')
         
         specified_product = get_object_or_404(Product, id=pk)
         variants = specified_product.variants.prefetch_related('variant_images')
@@ -226,7 +243,8 @@ class Varient_view(View):
 
 class CouponManagemnet(View):
     def get(self,request):
-
+        if  not request.user.is_authenticated:
+            return redirect('adminlogin')
         current_date = datetime.today().strftime("%Y-%m-%d")
         return render(request, 'admincoupon.html',{'current_date':current_date})
     
@@ -245,6 +263,8 @@ class CouponManagemnet(View):
 class Order_view(View):
 
     def get(self, request):
+        if  not request.user.is_authenticated:
+            return redirect('adminlogin')
         orders = Order.objects.all()
         return render(request, 'adminorder.html', {'orders': orders})
 
@@ -255,18 +275,24 @@ class Order_view(View):
 
 class AdminOrderItem(View):
     def get(self,request,pk):
+        if  not request.user.is_authenticated:
+            return redirect('adminlogin')
         order = get_object_or_404(Order, id=pk)
         orderitems=order.order_items.all()
         return render(request, 'admin_order_item.html', {'orderitems': orderitems})
 
 class DeliverOrder(View):
     def get(self,request,pk):
+        if  not request.user.is_authenticated:
+            return redirect('adminlogin')
         orderitem=OrderItem.objects.get(id=pk)
         orderitem.status = 'Delivered'
         orderitem.save()
         return redirect(request.META.get('HTTP_REFERER'))
 class CancelOrder(View):
     def get(self,request,pk):
+        if  not request.user.is_authenticated:
+            return redirect('adminlogin')
         orderitem=OrderItem.objects.get(id=pk)
         orderitem.status='Cancelled'
         orderitem.save()

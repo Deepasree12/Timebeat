@@ -8,21 +8,33 @@ from .models import *
 from django.views import View
 from django.http import HttpResponseBadRequest
 import uuid
-
+from django.urls import reverse
 
 def generate_cart_id(request):
     if 'cart_id' not in request.session:
-        request.session['cart_id'] = str(uuid.uuid4())  # Generate a unique identifier
-    return request.session['cart_id']
-
-
+        cart_id = str(uuid.uuid4())  # Generate a unique identifier
+        request.session['cart_id'] = cart_id
+    return request.session.get('cart_id')
 
 
 def add_to_cart(request, pk):
+    if  not request.user.is_authenticated:
+        return redirect('signin')
     if request.user.is_authenticated:
         try:
             variant = Variant.objects.get(pk=pk)
-            cart = Cart.objects.get_or_create(user=request.user)[0]
+        #     cart = Cart.objects.get_or_create(user=request.user)[0]
+        #     cart_item, cart_item_created = CartItem.objects.get_or_create(cart=cart, product_variant=variant)
+
+        #     if not cart_item_created:
+        #         cart_item.count += 1
+        #         cart_item.save()
+
+        #     return redirect('productdetail', pk=pk)
+        # except Variant.DoesNotExist:
+        #     return redirect('not_found')
+            cart, cart_created = Cart.objects.get_or_create(user=request.user)
+
             cart_item, cart_item_created = CartItem.objects.get_or_create(cart=cart, product_variant=variant)
 
             if not cart_item_created:
@@ -46,10 +58,14 @@ def add_to_cart(request, pk):
             return redirect('productdetail', pk=pk)
         except Variant.DoesNotExist:
             return redirect('not_found')
+        # if cart := request.session.get('cart'):
+        #     print(cart)
+
 
  
     
 def shopping_cart(request):
+
     if request.user.is_authenticated:
         user_cart = request.user.cart
         
