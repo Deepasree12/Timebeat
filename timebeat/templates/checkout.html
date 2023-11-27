@@ -157,9 +157,8 @@
 				<nav class="limiter-menu-desktop container">
 					
 					<!-- Logo desktop -->		
-					<a href="#" class="logo">
-						<img src="{% static '/images/icons/logo-01.png' %}" alt="IMG-LOGO">
-					</a>
+					<h2>TIME</h2>
+					<h2 style="font-weight: 300;">BEAT</h2>
 
 					<!-- Menu desktop -->
 					<div class="menu-desktop">
@@ -169,10 +168,15 @@
 								
 							</li>
 
-							<li class="active-menu">
+							<li>
 								<a href="{% url 'productlist' %}">Products</a>
 							</li>
-
+							<li>
+								<a href=" {% url "catgoryproducts" 'Women'%}">Women</a>
+							</li>
+							<li>
+								<a href=" {% url "catgoryproducts" 'Men' %}">Men</a>
+							</li> 
 							{% comment %} <li class="label1" data-label1="hot">
 								<a href="shoping-cart.html">Deals</a>
 							</li>
@@ -197,13 +201,14 @@
 							<i class="zmdi zmdi-search"></i>
 						</div>
 
-						<a href="{% url 'cart' %}"  class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11  js-show-cart" >
+						<a href="{% url 'cart' %}"  class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart" data-notify="{{cartitems.count}}">
 							<i class="zmdi zmdi-shopping-cart"></i>
 						</a>
 
-						<a href="{% url 'wishlistview' %}" class="icon-header-item cl2 trans-04 p-l-22 p-r-11 " >
+						<a href="{% url 'wishlistview' %}" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti" data-notify="{{wishlist.count}}" >
 							{% comment %}  icon-header-noti {% endcomment %}
 							<i class="zmdi zmdi-favorite-outline"></i>
+						</a>
 					</div>
 				</nav>
 			</div>	
@@ -222,13 +227,14 @@
 					<i class="zmdi zmdi-search"></i>
 				</div>
 
-				<a href="{% url 'cart' %}"  class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11  js-show-cart  icon-header-noti" >
+				<a href="{% url 'cart' %}"  class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart" data-notify="{{cartitems.count}}">
 					<i class="zmdi zmdi-shopping-cart"></i>
 				</a>
 
-				<a href="{% url 'wishlistview' %}" class="icon-header-item cl2 trans-04 p-l-22 p-r-11 " >
+				<a href="{% url 'wishlistview' %}" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti" data-notify="{{wishlist.count}}" >
 					{% comment %}  icon-header-noti {% endcomment %}
 					<i class="zmdi zmdi-favorite-outline"></i>
+				</a>
 			</div>
 
 			<!-- Button show menu -->
@@ -287,17 +293,7 @@
 					<a href="shoping-cart.html" class="label1 rs1" data-label1="hot">Features</a>
 				</li>
 
-				<li>
-					<a href="blog.html">Blog</a>
-				</li>
-
-				<li>
-					<a href="about.html">About</a>
-				</li>
-
-				<li>
-					<a href="contact.html">Contact</a>
-				</li>
+				
 			</ul>
 		</div>
 
@@ -526,8 +522,8 @@
         </div>
         <hr>
         <div class="d-grid py-2">
-          <input class="btn btn-success d-none" id="rzp-button1" type="submit" value="CONFIRM ORDER1">
-          <input class="btn btn-success d-block" id="cod-button1"  type="submit" value="CONFIRM ORDER2">
+          <input class="btn btn-success d-none" id="rzp-button1" type="submit" value="CONFIRM ORDER">
+          <input class="btn btn-success d-block" id="cod-button1"  type="submit" value="CONFIRM ORDER">
         </div>
       </div>
     </div>
