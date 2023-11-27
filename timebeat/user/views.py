@@ -238,14 +238,14 @@ class productdetail(View):
         reviews=0
         rating_data={}
         varient = get_object_or_404(Variant, pk=pk)
-        # if request.user.is_authenticated:
-            # user_cart = request.user.cart
-            # cartitems = CartItem.objects.filter(cart=user_cart)
-            # varient.is_in_cart = False
-            # for item in cartitems:
-            #     if varient == item.product_variant:
-            #         varient.is_in_cart = True
-            #         break
+        if request.user.is_authenticated:
+            user_cart = request.user.cart
+            cartitems = CartItem.objects.filter(cart=user_cart)
+            varient.is_in_cart = False
+            for item in cartitems:
+                if varient == item.product_variant:
+                    varient.is_in_cart = True
+                    break
                
         # else:
         #     cart_id = request.session.get('cart_id')

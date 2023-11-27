@@ -152,7 +152,7 @@ def decrement_cart(request, pk):
 
 def delete_cart(request, pk):
     if request.user.is_authenticated:
-        cart_item = CartItem.objects.get(product_variant_id=pk)
+        cart_item = CartItem.objects.get(cart=request.user.cart,product_variant_id=pk)
         cart_item.delete()
         return redirect(request.META.get('HTTP_REFERER'))
     else:
