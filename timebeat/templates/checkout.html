@@ -541,7 +541,7 @@
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
 			<div class="modal-body" style="overflow: hidden;">
-				<form action="{% url 'addAddress' %}" method="post" enctype="multipart/form-data">
+				<form action="{% url 'profile' %}" method="post" enctype="multipart/form-data">
 					{% csrf_token %}
 					<div class="mb-3">
 						<label for="UserName" class="form-label">Name</label>

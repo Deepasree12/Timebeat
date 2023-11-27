@@ -295,7 +295,9 @@ class userprofile(LoginRequiredMixin,View):
         return render(request,'userprofile.html',{'current_user':current_user,'user_data':user_data})
     
 
-class UserAddAddress(View):
+# class UserAddAddress(View):
+#     def get(self,request):
+#         return render(request, 'userprofile.html')
     def post(self, request):
       
         name = request.POST.get('name')
@@ -315,6 +317,11 @@ class UserAddAddress(View):
     
 class Checkout(View):
     def get(self, request):
+        user_address=request.user.user_addresses.all()
+        if not user_address:
+            messages.warning(request,'please add your delivery address')
+            return redirect('cart')
+        
         cart=request.user.cart
         cart.coupon_discount_price = request.session.get('coupon_discount',0)
         if cart.total_selling_price > cart.coupon_discount_price:
