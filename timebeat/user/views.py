@@ -38,6 +38,7 @@ class index(View):
         product=Product.objects.all()
         # cartitems=CartItem.objects.filter(cart=request.user.cart)
         # wishlist=WishlistItem.objects.filter(wished_item=request.user.wishlist)
+        
         return render(request,'index.html',{"category":category,"products":product,"subcategory":subcategory})
 
 
