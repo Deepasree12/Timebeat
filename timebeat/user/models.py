@@ -2,6 +2,8 @@ from django.contrib.auth.models import AbstractBaseUser,PermissionsMixin
 from . manager import CustomUserManager
 from django.db import models
 from store.models import *
+from cart.models import *
+from wishlist.models import *
 import uuid
 from datetime import datetime, timedelta
 from datetime import date
@@ -25,6 +27,11 @@ class User(AbstractBaseUser, PermissionsMixin):
   USERNAME_FIELD = 'email'
   REQUIRED_FIELDS = ['name']
 
+@receiver(post_save, sender=User)
+def create_cart_wishlist(sender, instance, created,**kwargs):
+  if created :
+    Cart.objects.create(user=instance)
+    Wishlist.objects.create(user=instance)
   
   
 class UserAddress(models.Model):
