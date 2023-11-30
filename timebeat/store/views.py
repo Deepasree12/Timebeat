@@ -83,7 +83,9 @@ class AdminLogin(View):
             admin = authenticate(request, email=email, password=password)
             if admin is not None:
                 login(request, admin)
-                
+                Cart.objects.get_or_create(user=request.user)
+                Wishlist.objects.get_or_create(user=request.user)
+            
                 return redirect('adminhome')
         else:
             

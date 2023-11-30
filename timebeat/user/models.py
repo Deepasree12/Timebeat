@@ -27,11 +27,11 @@ class User(AbstractBaseUser, PermissionsMixin):
   USERNAME_FIELD = 'email'
   REQUIRED_FIELDS = ['name']
 
-@receiver(post_save, sender=User)
-def create_cart_wishlist(sender, instance, created,**kwargs):
-  if created :
-    Cart.objects.create(user=instance)
-    Wishlist.objects.create(user=instance)
+# @receiver(post_save, sender=User)
+# def create_cart_wishlist(sender, instance, created,**kwargs):
+#   if created :
+#     Cart.objects.create(user=instance)
+#     Wishlist.objects.create(user=instance)
   
   
 class UserAddress(models.Model):

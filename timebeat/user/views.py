@@ -107,6 +107,8 @@ class signin(View):
         if user is not None :
             if user.is_active == True :
                 login(request, user)
+                Cart.objects.get_or_create(user=request.user)
+                Wishlist.objects.get_or_create(user=request.user)
             else:
                 messages.warning(request, 'user is bannned')
             return redirect('home')
