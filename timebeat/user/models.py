@@ -2,14 +2,9 @@ from django.contrib.auth.models import AbstractBaseUser,PermissionsMixin
 from . manager import CustomUserManager
 from django.db import models
 from store.models import *
-from cart.models import *
-from wishlist.models import *
 import uuid
-from datetime import datetime, timedelta
+from datetime import timedelta
 from datetime import date
-from django.dispatch import receiver
-from django.db.models import Sum
-from django.db.models.signals import post_save, post_delete
 from django.utils import timezone
 
 

@@ -17,8 +17,7 @@ class Cart(models.Model):
    coupon_discount_price = models.IntegerField(default=0)
    final_price=models.IntegerField(default=0)
  
-   def __str__(self):
-      return self.id
+
     
 class CartItem(models.Model):
    id = models.UUIDField(primary_key=True,editable=False,default=uuid.uuid4)
